@@ -1,12 +1,12 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {MessageEmbed} = require("discord.js");
 const ms = require('ms')
-const mysql = require("mysql");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('worship')
         .setDescription('worship jamie'),
     async execute(interaction){
+<<<<<<< HEAD
         const mysql = require('mysql')
         const connection = mysql.createConnection({
             host: '0.0.0.0',
@@ -20,6 +20,8 @@ module.exports = {
             console.log('Connection established')
         })
 
+=======
+>>>>>>> parent of 0b714c5... try just because
         await interaction.deferReply();
 
         const obj = 1653134400 * 1000
