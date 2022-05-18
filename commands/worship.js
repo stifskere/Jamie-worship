@@ -22,6 +22,26 @@ module.exports = {
             .setFooter({text: 'we appreciate your attempt tho'})
             .setColor('#ff0000')
 
-        await interaction.editReply({embeds: [embed]})
+        const embed2 = new MessageEmbed()
+            .setTitle('Worship sent')
+            .setDescription('Your worship was sent successfully')
+            .setFooter({text: 'You can check others worships using /worships'})
+            .setColor('#ff0000')
+
+        const embed3 = new MessageEmbed()
+            .setTitle('There was an error')
+            .setDescription('Your worship failed, sorry about that')
+            .setFooter({text: 'You can retry, you will lose nothing.'})
+
+        if(new Date().getTime() > obj){
+            try{
+                db.run(`INSERT INTO Worshippers VALUES (?)`, [interaction.user.id])
+                await interaction.editReply({embeds: [embed2]})
+            }catch{
+                await interaction.editReply({embeds: [embed3]})
+            }
+        }else{
+            await interaction.editReply({embeds: [embed]})
+        }
     }
 }
