@@ -22,6 +22,7 @@ client.on('ready', () => {
     setInterval(() => {
         if(i > statuses.length) i = 0;
         client.user.setActivity(statuses[i], {type: 'WATCHING'});
+        i++;
     }, 3000)
 
     childProcess.exec('npm run register', (err, stdout) => {
