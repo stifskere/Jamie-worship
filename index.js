@@ -20,7 +20,7 @@ client.on('ready', () => {
     let i = 0;
 
     setInterval(() => {
-        if(i > statuses.length) i = 0;
+        if(i >= statuses.length) i = 0;
         client.user.setActivity(statuses[i], {type: 'WATCHING'});
         i++;
     }, 3000)
