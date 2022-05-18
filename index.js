@@ -13,8 +13,6 @@ const client = new Client({
 client.login(process.env.TOKEN)
 
 client.on('ready', () => {
-    console.log('Ready to worship jamie')
-
     const statuses = ["Whatever Jamie is doing", "Jamie", "Jamie again", "Jamie my beloved"]
 
     let i = 0;
@@ -29,7 +27,20 @@ client.on('ready', () => {
         if(err) return console.log(`There was an error on registering commands:\n${err}`);
         console.log(stdout)
     })
+
+    client.guilds.cache.forEach(guild => {
+        if(!fs.existsSync(path.join(path.resolve('./databases/'), `${guild.id}.db`))){
+            client.createDatabase(guild.id);
+        }
+    })
+
+    console.log('Ready to worship jamie')
 });
+
+const functionFiles = fs.readdirSync(path.resolve('./functions')).filter(file => file.endsWith(".js"));
+for (const file of functionFiles){
+    client[file.slice(0, -3)] = require(path.resolve(`./functions/${file}`));
+}
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync(path.resolve('./commands'))

@@ -1,28 +1,17 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {MessageEmbed} = require("discord.js");
 const ms = require('ms')
+const sqlite = require('sqlite3').verbose();
+const path = require('path');
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('worship')
         .setDescription('worship jamie'),
     async execute(interaction){
-<<<<<<< HEAD
-        const mysql = require('mysql')
-        const connection = mysql.createConnection({
-            host: '0.0.0.0',
-            user: 'u9_Vbk78R9vyM',
-            password: '.vH4IcH+mQgd0B1X7NXQMWD9'
-        })
-
-        connection.connect((error) => {
-            if(error) return console.log(error);
-
-            console.log('Connection established')
-        })
-
-=======
->>>>>>> parent of 0b714c5... try just because
         await interaction.deferReply();
+
+        let db = new sqlite.Database(path.join(path.resolve('../databases/'), `${interaction.guild.id}.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
         const obj = 1653134400 * 1000
 
