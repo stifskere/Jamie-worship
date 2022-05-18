@@ -46,8 +46,9 @@ client.on('interactionCreate', async (interaction) => {
 })
 
 client.on('messageCreate', async (message) => {
+    if(message.author.bot) return;
     if(message.content.toLowerCase().includes('jamie')){
-        const answers = ["Want to talk about jamie with me?", "Did you say jamie?", "I also like Jamie", "Jamie is a god for me", "You talking about jamie and not telling me!?"]
-        await message.reply(answers[Math.floor(Math.random() * answers.length)])
+        const answers = ["Want to talk about jamie with me?", "Did you say jamie?", "I also like Jamie", "Jamie is a god for me", "You talking about jamie and not telling me!?"];
+        await message.reply(answers[Math.floor(Math.random() * answers.length)]);
     }
 })

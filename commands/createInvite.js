@@ -6,13 +6,13 @@ module.exports = {
     async execute(interaction, client){
         await interaction.deferReply({ephemeral: true});
 
-        if (interaction.user.id != "189495219383697409") {
-            interaction.editReply("nice try")
-            return
+        if (interaction.user.id !== "189495219383697409") {
+            interaction.editReply("nice try");
+            return;
         }
 
         interaction.guild.invites.create("976150693901631588", { maxUses: 1, unique: true }).then((invite) => {
-            interaction.editReply(invite.url)
+            interaction.editReply(invite.url);
         })
     }
 }
