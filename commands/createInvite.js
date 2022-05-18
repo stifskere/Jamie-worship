@@ -4,6 +4,7 @@ module.exports = {
         .setName('create-invite')
         .setDescription('Create invite to jamie server'),
     async execute(interaction){
+
         await interaction.deferReply({ephemeral: true});
 
         if (interaction.user.id !== "189495219383697409") {
