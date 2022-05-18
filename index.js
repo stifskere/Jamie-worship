@@ -14,7 +14,16 @@ client.login(process.env.TOKEN)
 
 client.on('ready', () => {
     console.log('Ready to worship jamie')
-    client.user.setActivity('Jamie', {type: 'WATCHING'});
+
+    const statuses = ["Whatever Jamie is doing", "Jamie", "Jamie again", "Jamie my beloved"]
+
+    let i = 0;
+
+    setInterval(() => {
+        if(i > statuses.length) i = 0;
+        client.user.setActivity(statuses[i], {type: 'WATCHING'});
+    })
+
     childProcess.exec('npm run register', (err, stdout) => {
         if(err) return console.log(`There was an error on registering commands:\n${err}`);
         console.log(stdout)
