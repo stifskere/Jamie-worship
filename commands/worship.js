@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction){
         const mysql = require('mysql')
         const connection = mysql.createConnection({
-            host: 'localhost',
+            host: '0.0.0.0',
             user: 'u9_Vbk78R9vyM',
             password: '.vH4IcH+mQgd0B1X7NXQMWD9'
         })
