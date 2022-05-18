@@ -9,7 +9,7 @@ module.exports = {
 
         const closeFriends = [];
 
-        interaction.guild.roles.cache.get('961075910042349618').members.map(member => {
+        interaction.guild.roles.cache.get('976175903371571220').members.map(member => {
             closeFriends.push(member.user.tag)
         })
 
