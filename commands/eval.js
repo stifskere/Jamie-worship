@@ -25,17 +25,8 @@ module.exports = {
             return;
         }
 
-        async function clean (text) {
-            if(text && text.constructor.name === "Promise") text = await text
-            if(typeof  text !== "string") text = require("util").inspect(text, {depth: 1});
-
-            text = text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-
-            return text;
-        }
-
         try{
-            let cleaned = await clean(eval(expression));
+            let cleaned = await client.cleanEval(eval(expression));
 
             if(cleaned.length > 1020) cleaned = cleaned.substring(0, 1000) + '...';
 
