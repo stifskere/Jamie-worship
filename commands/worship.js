@@ -21,7 +21,7 @@ module.exports = {
 
         let db = new sqlite.Database(path.join(path.resolve('./databases/'), `${interaction.guild.id}.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
-        const obj = 1653134400 * 1000
+        const obj = 1653156000 * 1000
 
         const embed = new MessageEmbed()
             .setTitle('Not yet')
