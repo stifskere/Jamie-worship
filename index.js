@@ -75,7 +75,7 @@ client.on('messageCreate', async (message) => {
             .setDescription(`**He said:** ${message.content}`)
             .setFooter({text: 'I\'l keep whatever our god says in here'})
 
-        message.guild.channels.cache.get('976149822476279929').send({embeds: [embed]})
+        message.guild.channels.cache.get('976832701015420998').send({embeds: [embed]})
         return;
     }
 
