@@ -1,9 +1,15 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
-const {MessageEmbed} = require("discord.js");
+const {MessageEmbed, MessageAttachment} = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('jamie')
-        .setDescription('Gives jamie info'),
+        .setDescription('Gives jamie info')
+        .addSubcommand(profile => profile
+            .setName('profile')
+            .setDescription('Shows jamie info or something'))
+        .addSubcommand(photo => photo
+            .setName('photo')
+            .setDescription('sends the jamie photo')),
     async execute(interaction){
         await interaction.deferReply({ephemeral: true});
 
@@ -17,24 +23,30 @@ module.exports = {
             })
         }
 
-        const jamieObject = interaction.guild.members.cache.get("394127601398054912")
+        const jamieObject = interaction.guild.members.cache.get("394127601398054912").user
 
-        const jamie = {
-            heIS: (typeof jamieObject === "object"),
-            tag: (typeof jamieObject === "object") ? jamieObject.tag : "Jamie#8409",
-            id: (typeof jamieObject === "object") ? jamieObject.id : "394127601398054912",
-            pfp: (typeof jamieObject === "object") ? jamieObject.avatarURL() : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
+        if(interaction.options.getSubcommand() === 'profile'){
+            const jamie = {
+                heIS: (typeof jamieObject === "object"),
+                tag: (typeof jamieObject === "object") ? jamieObject.tag : "Jamie#8409",
+                id: (typeof jamieObject === "object") ? jamieObject.id : "394127601398054912",
+                pfp: (typeof jamieObject === "object") ? jamieObject.avatarURL() : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
+            }
+
+            const embed = new MessageEmbed()
+                .setTitle('Jamie')
+                .setDescription(`**Jamie\'s tag:** ${jamie.tag}\n**Jamie\'s id:** ${jamie.id}\n\nHe lives in UK even tho he says he doesn\'t`)
+                .addField('Jamie\'s close friends', (closeFriends.length !== 0) ? closeFriends.toString().replaceAll(',', '\n') : "No close friends on this server.")
+                .setThumbnail(jamie.pfp)
+                .setColor('RANDOM')
+
+            if(jamie.heIS === false) embed.setFooter({text: 'The info may not be up to date since the user can\'t be fetched.'})
+
+            interaction.editReply({embeds: [embed]})
+        }else if(interaction.options.getSubcommand() === 'photo'){
+            const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif')
+            interaction.channel.send({files: [photo]})
+            interaction.deleteReply();
         }
-
-        const embed = new MessageEmbed()
-            .setTitle('Jamie')
-            .setDescription(`**Jamie\'s tag:** ${jamie.tag}\n**Jamie\'s id:** ${jamie.id}\n\nHe lives in UK even tho he says he doesn\'t`)
-            .addField('Jamie\'s close friends', (closeFriends.length !== 0) ? closeFriends.toString().replaceAll(',', '\n') : "No close friends on this server.")
-            .setThumbnail(jamie.pfp)
-            .setColor('RANDOM')
-
-        if(jamie.heIS === false) embed.setFooter({text: 'The info may not be up to date since the user can\'t be fetched.'})
-
-        interaction.editReply({embeds: [embed]})
     }
 }

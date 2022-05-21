@@ -42,12 +42,6 @@ module.exports = {
             .setFooter({text: 'You can retry, you will lose nothing.'})
             .setColor('#ff0000')
 
-        const embed4 = new MessageEmbed()
-            .setTitle('You already worshipped')
-            .setDescription('Jamie already have received your worship')
-            .setFooter({text: 'You can\'t send more than 1 worship'})
-            .setColor('#ff0000')
-
         db.all(`SELECT * FROM Worshippers WHERE UserID = (?)`, [interaction.user.id], async (err, row) => {
             if(new Date().getTime() > obj){
                 try{
