@@ -50,10 +50,6 @@ module.exports = {
 
         db.all(`SELECT * FROM Worshippers WHERE UserID = (?)`, [interaction.user.id], async (err, row) => {
             if(new Date().getTime() > obj){
-                if(row.length > 0){
-                    interaction.editReply({embeds: [embed4]})
-                    return;
-                }
                 try{
                     db.run(`INSERT INTO Worshippers VALUES (?, ?)`, [interaction.user.id, worship])
                     await interaction.editReply({embeds: [embed2]})
