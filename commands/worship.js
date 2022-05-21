@@ -12,12 +12,12 @@ module.exports = {
             .setName('worship')
             .setDescription('The text you want to say to our god')
             .setRequired(true)),
-    async execute(interaction, client){
+    async execute(interaction){
         await interaction.deferReply();
 
         const worship = interaction.options.getString('worship').replace(/[^a-zA-Z,.]/g, '');
 
-        const jamie = client.users.cache.find(user => user.id === '39412760139805491');
+        const jamie = interaction.guild.members.cache.get("394127601398054912");
 
         let db = new sqlite.Database(path.join(path.resolve('./databases/'), `${interaction.guild.id}.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 

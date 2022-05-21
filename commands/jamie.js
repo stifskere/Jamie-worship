@@ -4,7 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('jamie')
         .setDescription('Gives jamie info'),
-    async execute(interaction, client){
+    async execute(interaction){
         await interaction.deferReply({ephemeral: true});
 
         const closeFriends = [];
@@ -17,13 +17,13 @@ module.exports = {
             })
         }
 
-        const jamieObject = client.users.cache.find(user => user.id === '394127601398054912')
+        const jamieObject = interaction.guild.members.cache.get("394127601398054912")
 
         const jamie = {
             heIS: (typeof jamieObject === "object"),
-            tag: (typeof jamieObject === "object") ? jamieObject.username : "Jamie#8409",
+            tag: (typeof jamieObject === "object") ? jamieObject.tag : "Jamie#8409",
             id: (typeof jamieObject === "object") ? jamieObject.id : "394127601398054912",
-            pfp: (typeof jamieObject === "object") ? `https://cdn.discordapp.com/avatars/${jamieObject.id}/${jamieObject.avatar}.png?size=4096` : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
+            pfp: (typeof jamieObject === "object") ? jamieObject.avatarURL() : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
         }
 
         const embed = new MessageEmbed()
