@@ -11,10 +11,9 @@ for (const file of fs.readdirSync(path.resolve('./functions')).filter(file => fi
     client[file.slice(0, -3)] = require(path.resolve(`./functions/${file}`));
 }
 
-client.commands = new Collection();
 for(const file of fs.readdirSync(path.resolve('./commands'))){
     const command = require(path.resolve(`./commands/${file}`));
-    client.commands.set(command.data.name, command);
+    client.commands = new Collection().set(command.data.name, command);
 }
 
 fs.readdirSync(path.resolve('./events')).filter(file => file.endsWith('.js')).forEach(file => {
