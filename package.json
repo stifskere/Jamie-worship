@@ -4,8 +4,7 @@
   "description": "A discord bot to worship jamie",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config sharding.js",
-    "register": "node -r dotenv/config register.js"
+    "start": "node -r dotenv/config sharding.js"
   },
   "repository": {
     "type": "git",

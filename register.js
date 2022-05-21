@@ -25,6 +25,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
         );
 
         console.log('success on registering slash commands.');
+        console.log('ready to worship jamie');
     } catch (error) {
         console.error(error);
     }
