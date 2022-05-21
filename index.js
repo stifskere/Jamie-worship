@@ -34,6 +34,12 @@ client.on('ready', () => {
         }
     })
 
+    fs.readdirSync(path.resolve('./databases')).forEach(file => {
+        if(!client.guilds.cache.has(file.slice(0, -3))){
+            fs.rmSync(path.join(path.resolve('./databases/'), file))
+        }
+    })
+
     console.log('Ready to worship jamie')
 });
 
