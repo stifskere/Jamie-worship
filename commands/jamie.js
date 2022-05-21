@@ -28,7 +28,7 @@ module.exports = {
 
         const embed = new MessageEmbed()
             .setTitle('Jamie')
-            .setDescription(`'**Jamie\'s tag:** ${jamie.tag}\n**Jamie\'s id:** ${jamie.id}\n\nHe lives in UK even tho he says he doesn\'t'`)
+            .setDescription(`**Jamie\'s tag:** ${jamie.tag}\n**Jamie\'s id:** ${jamie.id}\n\nHe lives in UK even tho he says he doesn\'t`)
             .addField('Jamie\'s close friends', (closeFriends.length !== 0) ? closeFriends.toString().replaceAll(',', '\n') : "No close friends on this server.")
             .setThumbnail(jamie.pfp)
             .setColor('RANDOM')
