@@ -11,7 +11,7 @@ module.exports = {
             .setName('photo')
             .setDescription('sends the jamie photo')),
     async execute(interaction){
-        await interaction.deferReply({ephemeral: true});
+        await interaction.deferReply();
 
         const closeFriends = [];
 
