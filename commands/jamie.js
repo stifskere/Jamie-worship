@@ -4,7 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('jamie')
         .setDescription('Gives jamie info'),
-    async execute(interaction){
+    async execute(interaction, client){
         await interaction.deferReply({ephemeral: true});
 
         const closeFriends = [];
@@ -17,13 +17,23 @@ module.exports = {
             })
         }
 
+        const jamieObject = client.users.cache.find(user => user.id === '394127601398054912')
+
+        const jamie = {
+            heIS: (typeof jamieObject === "object"),
+            tag: (typeof jamieObject === "object") ? jamieObject.username : "Jamie#8409",
+            id: (typeof jamieObject === "object") ? jamieObject.id : "394127601398054912",
+            pfp: (typeof jamieObject === "object") ? `https://cdn.discordapp.com/avatars/${jamieObject.id}/${jamieObject.avatar}.png?size=4096` : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
+        }
+
         const embed = new MessageEmbed()
             .setTitle('Jamie')
-            .setDescription('**Jamie\'s tag:** Jamie#8409\n**Jamie\'s id:** 394127601398054912\n\nHe lives in UK even tho he says he doesn\'t')
-            .addField('Jamie\'s close friends', (closeFriends.length <= 0) ? closeFriends.toString().replaceAll(',', '\n') : "No close friends on this server.")
-            .setThumbnail('https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096')
-            .setFooter({text: 'The info may not be up to date since the user can\'t be fetched.'})
+            .setDescription(`'**Jamie\'s tag:** ${jamie.tag}\n**Jamie\'s id:** ${jamie.id}\n\nHe lives in UK even tho he says he doesn\'t'`)
+            .addField('Jamie\'s close friends', (closeFriends.length !== 0) ? closeFriends.toString().replaceAll(',', '\n') : "No close friends on this server.")
+            .setThumbnail(jamie.pfp)
             .setColor('RANDOM')
+
+        if(jamie.heIS === false) embed.setFooter({text: 'The info may not be up to date since the user can\'t be fetched.'})
 
         interaction.editReply({embeds: [embed]})
     }
