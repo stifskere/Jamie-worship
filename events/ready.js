@@ -14,7 +14,7 @@ module.exports = (client) => {
 
     childProcess.exec('node register.js', (err, stdout) => {
         if(err) return console.log(`There was an error on registering commands:\n${err}`);
-        console.log(stdout)
+        console.normalLog(stdout)
     })
 
     client.guilds.cache.forEach(guild => {

@@ -1,3 +1,4 @@
+[1:50:51] [error] - TypeError: console.dsadasdsad is not a function
 Command loaded: create-invite
 Command loaded: eval
 Command loaded: jamie

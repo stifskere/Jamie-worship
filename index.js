@@ -1,18 +1,7 @@
 const { Client, Collection } = require('discord.js')
 require('dotenv').config()
 const fs = require('node:fs')
-const util = require('node:util');
-const log4js = require('log4js')
-
-if(!fs.existsSync('./logs/logs.txt')) fs.writeFileSync('./logs/logs.txt', '')
-
-const log_file = fs.createWriteStream(__dirname + '/logs/logs.txt', {flags : 'w'});
-const log_stdout = process.stdout;
-
-console.log = function(d) { //
-    log_file.write(util.format(d) + '\n');
-    log_stdout.write(util.format(d) + '\n');
-};
+require('./functions/customLog')();
 
 const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000})
 
@@ -22,12 +11,18 @@ for (const file of fs.readdirSync('./functions').filter(file => file.endsWith(".
     client[file.slice(0, -3)] = require(`./functions/${file}`);
 }
 
-client.commands = new Collection()
-for(const file of fs.readdirSync('./commands')){
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.data.name, command);
-}
+client.customLog();
 
-fs.readdirSync('./events').filter(file => file.endsWith('.js')).forEach(file => {
-    client.on(file.slice(0, -3), async (...args) => require(`./events/${file}`)(client, ...args));
-});
+try{
+    client.commands = new Collection()
+    for(const file of fs.readdirSync('./commands')){
+        const command = require(`./commands/${file}`);
+        client.commands.set(command.data.name, command);
+    }
+
+    fs.readdirSync('./events').filter(file => file.endsWith('.js')).forEach(file => {
+        client.on(file.slice(0, -3), async (...args) => require(`./events/${file}`)(client, ...args));
+    });
+}catch(error){
+    console.error(error)
+}
