@@ -1,6 +1,18 @@
 const { Client, Collection } = require('discord.js')
 require('dotenv').config()
 const fs = require('node:fs')
+const util = require('node:util');
+const log4js = require('log4js')
+
+if(!fs.existsSync('./logs/logs.txt')) fs.writeFileSync('./logs/logs.txt', '')
+
+const log_file = fs.createWriteStream(__dirname + '/logs/logs.txt', {flags : 'w'});
+const log_stdout = process.stdout;
+
+console.log = function(d) { //
+    log_file.write(util.format(d) + '\n');
+    log_stdout.write(util.format(d) + '\n');
+};
 
 const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000})
 
