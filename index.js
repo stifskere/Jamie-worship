@@ -3,7 +3,7 @@ require('dotenv').config()
 const fs = require('node:fs')
 require('./functions/customLog')();
 
-const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000})
+const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}})
 
 client.login(process.env.TOKEN)
 

@@ -8,3 +8,4 @@ started Registering slash commands
 success on registering slash commands.
 Ready to worship jamie
 
+[1:52:52] [error] - DiscordAPIError: Unknown interaction
