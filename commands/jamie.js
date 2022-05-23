@@ -43,9 +43,13 @@ module.exports = {
 
             interaction.editReply({embeds: [embed]})
         }else if(interaction.options.getSubcommand() === 'photo'){
-            const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif')
-            interaction.channel.send({files: [photo]})
-            interaction.deleteReply();
+            try{
+                const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif')
+                interaction.channel.send({files: [photo]})
+                interaction.deleteReply();
+            }catch{
+                interaction.editReply({content: `Can't send images in this channel`})
+            }
         }
     }
 }
