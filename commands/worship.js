@@ -18,7 +18,7 @@ module.exports = {
         const worship = interaction.options.getString('worship').replace(/[^a-zA-Z,. ]/g, '');
 
         if(worship.length > 100){
-            await interaction.editReply({content: `Your answer can't be more than 100 characters long`})
+            await interaction.editReply({content: `Your worship can't be more than 100 characters long`})
             return;
         }
 
