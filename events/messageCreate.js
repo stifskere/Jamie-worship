@@ -5,7 +5,7 @@ module.exports = async (client, message) => {
     if(message.author.id === '394127601398054912'){
         const embed = new MessageEmbed()
             .setTitle('Jamie said something')
-            .setDescription(`**He said:** ${message.content}`)
+            .setDescription(`**He said:** ${message.content}\n**In:** ${message.guild.name}\n[Jump to message](${message.url})`)
             .setFooter({text: 'I\'l keep whatever our god says in here'})
 
         message.guild.channels.cache.get('976832701015420998').send({embeds: [embed]})
