@@ -16,8 +16,8 @@ module.exports = {
     async execute(interaction, client){
         await interaction.deferReply({ephemeral: true})
 
-        if(interaction.user.id !== '463986224101588992'){
-            await interaction.editReply({content: `Only jamie can use this command.`})
+        if(interaction.user.id !== '394127601398054912'){
+            await interaction.editReply({content: `Only jamie can use this command, you don't look like jamie`})
         }
 
         const worshipId = await interaction.options.getInteger('id')
