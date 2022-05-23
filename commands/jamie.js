@@ -24,7 +24,6 @@ module.exports = {
         }
 
         const jamieObject = interaction.guild.members.cache.get("394127601398054912").user
-
         if(interaction.options.getSubcommand() === 'profile'){
             const jamie = {
                 heIS: (typeof jamieObject === "object"),

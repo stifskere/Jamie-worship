@@ -1,7 +1,6 @@
 const { Client, Collection } = require('discord.js')
 require('dotenv').config()
 const fs = require('node:fs')
-require('./functions/customLog')();
 
 const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}})
 
@@ -10,8 +9,6 @@ client.login(process.env.TOKEN)
 for (const file of fs.readdirSync('./functions').filter(file => file.endsWith(".js"))){
     client[file.slice(0, -3)] = require(`./functions/${file}`);
 }
-
-client.customLog();
 
 try{
     client.commands = new Collection()

@@ -14,13 +14,11 @@ module.exports = (client) => {
 
     childProcess.exec('node register.js', (err, stdout) => {
         if(err) return console.log(`There was an error on registering commands:\n${err}`);
-        console.normalLog(stdout)
+        console.log(stdout)
     })
 
     client.guilds.cache.forEach(guild => {
-        if(!fs.existsSync(path.join(path.resolve('./databases/'), `${guild.id}.db`))){
-            client.createDatabase(guild.id);
-        }
+            client.createDatabase(guild.id)
     })
 
     fs.readdirSync(path.resolve('./databases')).forEach(file => {
