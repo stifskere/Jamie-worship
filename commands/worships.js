@@ -49,7 +49,7 @@ module.exports = {
                     fields: await Promise.all(
                         current.map(async worship => ({
                             name: `User: ${(typeof client.users.cache.find(user => user.id === worship.UserID) === "object") ? client.users.cache.find(user => user.id === worship.UserID).tag : 'Unknown user'}`,
-                            value: `**Worship:** ${worship.Worship}\n**Guild:** ${worship.Guild}`
+                            value: `**ID:** ${worship.Id}\n**Worship:** ${worship.Worship}\n**Guild:** ${worship.Guild}`
                         }))
                     ),
                 })

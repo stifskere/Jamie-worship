@@ -44,7 +44,7 @@ module.exports = {
 
             if(new Date().getTime() > obj){
                 try{
-                    db.run(`INSERT INTO Worshippers VALUES (?, ?, ?)`, [interaction.user.id, worship, interaction.guild.name])
+                    db.run(`INSERT INTO Worshippers VALUES (?, ?, ?, null)`, [interaction.user.id, worship, interaction.guild.name])
                     await interaction.editReply({embeds: [embed2]})
                     if(typeof jamie === 'object'){
                         const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, i got a worship"]
