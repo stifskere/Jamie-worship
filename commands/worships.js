@@ -11,7 +11,7 @@ module.exports = {
     async execute(interaction, client){
         await interaction.deferReply();
 
-        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `${interaction.guild.id}.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
+        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
         const backId = 'back'
         const forwardId = 'forward'
@@ -42,37 +42,38 @@ module.exports = {
             }
 
             let gEmbed = async (start) => {
-                const current = rows.slice(start, start + 10)
+                const current = rows.slice(start, start + 5)
 
                 return new MessageEmbed({
                     title: 'Here are all the worshippers',
                     fields: await Promise.all(
                         current.map(async worship => ({
-                            name: `User: ${(typeof  client.users.cache.find(user => user.id === worship.UserID) === "object") ? client.users.cache.find(user => user.id === worship.UserID).tag : 'Unknown user'}`,
-                            value: `Worship: ${worship.Worship}`
+                            name: `User: ${(typeof client.users.cache.find(user => user.id === worship.UserID) === "object") ? client.users.cache.find(user => user.id === worship.UserID).tag : 'Unknown user'}`,
+                            value: `**Worship:** ${worship.Worship}\n**Guild:** ${worship.Guild}`
                         }))
                     ),
                 })
                     .setFooter({text: `Showing ${start + 1}-${start + current.length} out of ${rows.length} worships`})
             }
 
-            const canFitOnOnePage = rows.length <= 10
+            const canFitOnOnePage = rows.length <= 5
             const embedMessage = await interaction.editReply({embeds: [await gEmbed(0)], components: canFitOnOnePage ? [] : [new MessageActionRow({components: [forwardButton]})], fetchReply: true})
 
             if(canFitOnOnePage) return;
 
-            const collector = embedMessage.createMessageComponentCollector({filter: ({user}) => user.id === interaction.user.id})
+            const collector = embedMessage.createMessageComponentCollector()
 
             let currentIndex = 0;
 
-            collector.on('collect', async interaction => {
-                interaction.customId === backId ? (currentIndex -= 10) : (currentIndex += 10)
-                await interaction.update({
+            collector.on('collect', async interactionn => {
+                if(interactionn.user.id !== interaction.user.id) return interactionn.reply({content: 'This interaction is not yours, run /worshippers.', ephemeral: true})
+                interactionn.customId === backId ? (currentIndex -= 5) : (currentIndex += 5)
+                await interactionn.update({
                     embeds: [await gEmbed(currentIndex)],
                     components: [new MessageActionRow({
                         components: [
                             ...(currentIndex ? [backButton] : []),
-                            ...(currentIndex + 10 < rows.length ? [forwardButton] : [])
+                            ...(currentIndex + 5 < rows.length ? [forwardButton] : [])
                         ]
                     })]
                 })

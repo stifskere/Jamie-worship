@@ -19,7 +19,7 @@ module.exports = {
 
         const jamie = interaction.guild.members.cache.get("394127601398054912");
 
-        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `${interaction.guild.id}.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
+        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
         const obj = 1653156000 * 1000
 
@@ -42,10 +42,9 @@ module.exports = {
             .setFooter({text: 'You can retry, you will lose nothing.'})
             .setColor('#ff0000')
 
-        db.all(`SELECT * FROM Worshippers WHERE UserID = (?)`, [interaction.user.id], async (err, row) => {
             if(new Date().getTime() > obj){
                 try{
-                    db.run(`INSERT INTO Worshippers VALUES (?, ?)`, [interaction.user.id, worship])
+                    db.run(`INSERT INTO Worshippers VALUES (?, ?, ?)`, [interaction.user.id, worship, interaction.guild.name])
                     await interaction.editReply({embeds: [embed2]})
                     if(typeof jamie === 'object'){
                         const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, i got a worship"]
@@ -57,7 +56,7 @@ module.exports = {
             }else{
                 await interaction.editReply({embeds: [embed]})
             }
-        })
+
         db.close();
     }
 }

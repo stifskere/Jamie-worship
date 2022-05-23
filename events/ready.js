@@ -12,18 +12,11 @@ module.exports = (client) => {
         i++;
     }, 3000)
 
-    childProcess.exec('node register.js', (err, stdout) => {
+    childProcess.exec('node register.js', async (err, stdout) => {
         if(err) return console.log(`There was an error on registering commands:\n${err}`);
-        console.log(stdout)
+        await console.log(stdout)
+        await console.info('Ready to worship jamie');
     })
 
-    client.guilds.cache.forEach(guild => {
-            client.createDatabase(guild.id)
-    })
-
-    fs.readdirSync(path.resolve('./databases')).forEach(file => {
-        if(!client.guilds.cache.has(file.slice(0, -3))){
-            fs.rmSync(path.join(path.resolve('./databases/'), file))
-        }
-    })
+    if(!fs.existsSync('./databases/global.db')) client.createDatabase();
 }
