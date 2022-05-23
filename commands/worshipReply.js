@@ -4,14 +4,14 @@ const sqlite = require('sqlite3').verbose();
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('reply')
-        .setDescription('Jamie can reply to its worships')
+        .setDescription('Jamie can reply to his worships')
         .addIntegerOption(id => id
             .setName('id')
-            .setDescription('id of the worship you want to reply')
+            .setDescription('id of the worship you want to reply to')
             .setRequired(true))
         .addStringOption(content => content
             .setName('content')
-            .setDescription('What you want to reply with?')
+            .setDescription('What do you want to reply with?')
             .setRequired(true)),
     async execute(interaction, client){
         await interaction.deferReply({ephemeral: true})
@@ -40,7 +40,7 @@ module.exports = {
                 await user.send({content: `**Jamie replied to your worship with:**\n${replyContent}`})
                 await interaction.editReply({content: `Your reply was sent to ${user}`})
             }catch{
-                await interaction.editReply({content: `This user DMS are disabled, your reply was not sent`})
+                await interaction.editReply({content: `This user's DMS are disabled, your reply was not sent`})
             }
         })
     }

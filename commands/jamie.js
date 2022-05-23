@@ -3,13 +3,13 @@ const {MessageEmbed, MessageAttachment} = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('jamie')
-        .setDescription('Gives jamie info')
+        .setDescription('Gives Jamie info')
         .addSubcommand(profile => profile
             .setName('profile')
-            .setDescription('Shows jamie info or something'))
+            .setDescription('Shows Jamie info or something'))
         .addSubcommand(photo => photo
             .setName('photo')
-            .setDescription('sends the jamie photo')),
+            .setDescription('sends the Jamie photo')),
     async execute(interaction){
         await interaction.deferReply();
 
@@ -45,7 +45,7 @@ module.exports = {
         }else if(interaction.options.getSubcommand() === 'photo'){
             try{
                 const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif')
-                interaction.channel.send({files: [photo]})
+                await interaction.channel.send({files: [photo]})
                 interaction.deleteReply();
             }catch{
                 interaction.editReply({content: `Can't send images in this channel`})

@@ -34,7 +34,7 @@ module.exports = {
             if(rows.length === 0){
                 const embed = new MessageEmbed()
                     .setTitle('No worships :(')
-                    .setDescription('Sadly jamie doesn\'t have any worshippers yet\nUser /worship to worship jamie')
+                    .setDescription('Sadly jamie doesn\'t have any worshippers yet\nUse `/worship` to worship jamie')
                     .setColor('#ff0000')
 
                 interaction.editReply({embeds: [embed]})
@@ -66,7 +66,7 @@ module.exports = {
             let currentIndex = 0;
 
             collector.on('collect', async interactionn => {
-                if(interactionn.user.id !== interaction.user.id) return interactionn.reply({content: 'This interaction is not yours, run /worshippers.', ephemeral: true})
+                if(interactionn.user.id !== interaction.user.id) return interactionn.reply({content: 'This interaction is not yours, run `/worshippers`.', ephemeral: true})
                 interactionn.customId === backId ? (currentIndex -= 5) : (currentIndex += 5)
                 await interactionn.update({
                     embeds: [await gEmbed(currentIndex)],

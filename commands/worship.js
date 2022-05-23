@@ -7,7 +7,7 @@ const path = require('path');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('worship')
-        .setDescription('worship jamie')
+        .setDescription('worship Jamie')
         .addStringOption(worship => worship
             .setName('worship')
             .setDescription('The text you want to say to our god')
@@ -47,7 +47,7 @@ module.exports = {
                     db.run(`INSERT INTO Worshippers VALUES (?, ?, ?, null)`, [interaction.user.id, worship, interaction.guild.name])
                     await interaction.editReply({embeds: [embed2]})
                     if(typeof jamie === 'object'){
-                        const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, i got a worship"]
+                        const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"]
                         jamie.send(`${arrPhrases[Math.floor(Math.random() * arrPhrases.length)]}\nThey said: ${worship}`)
                     }
                 }catch{

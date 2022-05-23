@@ -14,7 +14,7 @@ module.exports = async (client, message) => {
 
     //this will be for the moment
     if(message.content.toLowerCase().includes('jamie') && ['976149800447770624'].includes(message.guild.id)){
-        const answers = ["Want to talk about jamie with me?", "Did you say jamie?", "I also like Jamie", "Jamie is a god for me", "You talking about jamie and not telling me!?"];
+        const answers = ["Want to talk about Jamie with me?", "Did you say Jamie?", "I also like Jamie", "Jamie is a god for me", "You talking about jamie and not telling me!?"];
         await message.reply(answers[Math.floor(Math.random() * answers.length)]);
     }
 }
