@@ -24,6 +24,11 @@ module.exports = {
         const worshipId = await interaction.options.getInteger('id')
         const replyContent = await interaction.options.getString('content')
 
+        if(replyContent.length > 100){
+            await interaction.editReply({content: `Your answer can't be more than 100 characters long`})
+            return;
+        }
+
         let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
         db.all(`SELECT * FROM Worshippers WHERE Id = ${worshipId}`, async (err, row) => {

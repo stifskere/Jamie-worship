@@ -17,6 +17,11 @@ module.exports = {
 
         const worship = interaction.options.getString('worship').replace(/[^a-zA-Z,. ]/g, '');
 
+        if(worship.length > 100){
+            await interaction.editReply({content: `Your answer can't be more than 100 characters long`})
+            return;
+        }
+
         const jamie = interaction.guild.members.cache.get("394127601398054912");
 
         let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
