@@ -18,6 +18,7 @@ module.exports = {
 
         if(interaction.user.id !== '394127601398054912'){
             await interaction.editReply({content: `Only jamie can use this command, you don't look like jamie`})
+            return;
         }
 
         const worshipId = await interaction.options.getInteger('id')
