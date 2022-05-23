@@ -15,7 +15,7 @@ module.exports = {
     async execute(interaction){
         await interaction.deferReply();
 
-        const worship = interaction.options.getString('worship').replace(/[^a-zA-Z,.]/g, '');
+        const worship = interaction.options.getString('worship').replace(/[^a-zA-Z,. ]/g, '');
 
         const jamie = interaction.guild.members.cache.get("394127601398054912");
 
