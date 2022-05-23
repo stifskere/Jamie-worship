@@ -66,7 +66,7 @@ module.exports = {
             let currentIndex = 0;
 
             collector.on('collect', async interactionn => {
-                if(interactionn.user.id !== interaction.user.id) return interactionn.reply({content: 'This interaction is not yours, run `/worshippers`.', ephemeral: true})
+                if(interactionn.user.id !== interaction.user.id) return interactionn.reply({content: 'This interaction is not yours, run \'/worshippers\'.', ephemeral: true})
                 interactionn.customId === backId ? (currentIndex -= 5) : (currentIndex += 5)
                 await interactionn.update({
                     embeds: [await gEmbed(currentIndex)],
