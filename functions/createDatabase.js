@@ -2,8 +2,11 @@ module.exports = async () => {
     const path = require("path");
     const sqlite = require('sqlite3').verbose()
     const fs = require('fs');
-    if(!fs.existsSync('./databases')) fs.mkdirSync('./databases')
+    if(!fs.existsSync('./databases')) {
+        fs.mkdirSync('./databases')
+        console.warn('There aren\'t any databases folder')
+    }
     let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
     await db.run(`CREATE TABLE IF NOT EXISTS Worshippers(UserID VARCHAR NOT NULL, Worship VARCHAR NOT NULL, Guild VARCHAR NOT NULL)`)
-    console.info('Global database created')
+    console.info('Global databases folder and database created')
 }
