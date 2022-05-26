@@ -8,7 +8,7 @@ module.exports = async (client, message) => {
             .setDescription(`**He said:** ${message.content}\n**In:** ${message.guild.name}\n[Jump to message](${message.url})`)
             .setFooter({text: 'I\'l keep whatever our god says in here'})
 
-        message.guild.channels.cache.get('976832701015420998').send({embeds: [embed]})
+        client.guilds.cache.get('976149800447770624').channels.cache.get('976832701015420998').send({embeds: [embed]})
         return;
     }
 
