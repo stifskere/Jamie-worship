@@ -15,7 +15,7 @@ module.exports = {
     async execute(interaction){
         await interaction.deferReply();
 
-        const worship = interaction.options.getString('worship').replace(/[^a-zA-Z,. ]/g, '');
+        const worship = interaction.options.getString('worship').replace(/[*`]/g, '');
 
         if(worship.length > 100){
             await interaction.editReply({content: `Your worship can't be more than 100 characters long`})
@@ -53,7 +53,11 @@ module.exports = {
                     await interaction.editReply({embeds: [embed2]})
                     if(typeof jamie === 'object'){
                         const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"]
-                        jamie.send(`${arrPhrases[Math.floor(Math.random() * arrPhrases.length)]}\nThey said: ${worship}`)
+                        try{
+                            jamie.send(`${arrPhrases[Math.floor(Math.random() * arrPhrases.length)]}\nThey said: ${worship}`)
+                        }catch{
+                            console.warn("jamie blocked the bot, couldn't send the worship message")
+                        }
                     }
                 }catch{
                     await interaction.editReply({embeds: [embed3]})
@@ -61,7 +65,6 @@ module.exports = {
             }else{
                 await interaction.editReply({embeds: [embed]})
             }
-
         db.close();
     }
 }
