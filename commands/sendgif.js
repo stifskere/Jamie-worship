@@ -9,14 +9,15 @@ module.exports = {
             .setDescription('gif')),
 
     async execute(interaction, client){
+        interaction.deferReply({ephemeral: true});
         const jamieObject = client.guilds.cache.get('976149800447770624').members.cache.get("394127601398054912").user
         const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif')
 
         try{
             jamieObject.send({content: `**From:** ${interaction.user.tag}`, files: [photo]})
-            interaction.reply({content: 'Your jamie gif was sent', ephemeral: true})
+            interaction.editReply({content: 'Your jamie gif was sent', ephemeral: true})
         }catch{
-            interaction.reply({content: `There was an error on sending your jamie gif`})
+            interaction.editReply({content: `There was an error on sending your jamie gif`})
         }
 
     }
