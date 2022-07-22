@@ -1,14 +1,17 @@
-const {MessageEmbed} = require("discord.js");
+const {MessageEmbed, MessageButton, MessageActionRow} = require("discord.js");
+const {ButtonBuilder, ActionRowBuilder} = require("@discordjs/builders");
 module.exports = async (client, message) => {
     if(message.author.bot) return;
 
     if(message.author.id === '394127601398054912'){
+        const buttonActionRow = new MessageActionRow().addComponents(new MessageButton().setStyle('LINK').setLabel("Go to message").setURL(message.url))
+
         const embed = new MessageEmbed()
             .setTitle('Jamie said something')
-            .setDescription(`**He said:** ${message.content}\n**In:** ${message.guild.name}\n[Jump to message](${message.url})`)
-            .setFooter({text: 'I\'l keep whatever our god says in here'})
+            .setDescription(`**He said:** ${message.content}\n**In:** ${message.guild.name}`)
+            .setFooter({text: 'I\'l keep whatever our god says in here'});
 
-        client.guilds.cache.get('976149800447770624').channels.cache.get('976832701015420998').send({embeds: [embed]})
+        client.guilds.cache.get('976149800447770624').channels.cache.get('976832701015420998').send({embeds: [embed], components: [buttonActionRow]});
         return;
     }
 
