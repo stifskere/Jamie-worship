@@ -7,11 +7,20 @@ const sqlite = require('sqlite3').verbose();
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('worships')
-        .setDescription('Check other\'s worships'),
+        .setDescription('Check other\'s worships')
+        .addStringOption(order => order
+            .setName('order')
+            .setDescription('In what order the worships should be displayed')
+            .addChoices({name: "Ascending", value: "ASC"}, {name: "Descending", value: "DESC"})
+            .setRequired(false)),
     async execute(interaction, client){
         await interaction.deferReply();
 
-        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
+        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
+
+        let order = await interaction.options.getString('order');
+
+        order ??= "ASC";
 
         const backId = 'back'
         const forwardId = 'forward'
@@ -28,7 +37,7 @@ module.exports = {
             customId: forwardId
         })
 
-        await db.all(`SELECT * FROM Worshippers`, async (err, rows) => {
+        await db.all("SELECT * FROM Worshippers" + "ORDER BY Id ${order}", async (err, rows) => {
             if(err) console.log(err);
 
             if(rows.length === 0){

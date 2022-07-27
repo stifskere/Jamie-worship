@@ -24,8 +24,8 @@ module.exports = {
         const worshipId = await interaction.options.getInteger('id')
         const replyContent = await interaction.options.getString('content')
 
-        if(replyContent.length > 100){
-            await interaction.editReply({content: `Your answer can't be more than 100 characters long`})
+        if(replyContent.length > 300){
+            await interaction.editReply({content: `Your answer can't be more than 300 characters long`})
             return;
         }
 
