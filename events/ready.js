@@ -1,6 +1,6 @@
 const childProcess = require("node:child_process");
 const fs = require("node:fs");
-const path = require("node:path");
+
 module.exports = (client) => {
     const statuses = ["Whatever Jamie is doing", "Jamie", "Jamie again", "Jamie my beloved"]
 
@@ -8,9 +8,9 @@ module.exports = (client) => {
 
     setInterval(() => {
         if(i >= statuses.length) i = 0;
-        client.user.setActivity(statuses[i], {type: 'WATCHING'});
+        try{client.user.setActivity(statuses[i], {type: 'WATCHING'});}catch{}
         i++;
-    }, 5000)
+    }, 60000)
 
     childProcess.exec('node register.js', async (err, stdout) => {
         if(err) return console.log(`There was an error on registering commands:\n${err}`);
