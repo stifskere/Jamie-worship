@@ -12,7 +12,7 @@ module.exports = {
             .setName('worship')
             .setDescription('The text you want to say to our god')
             .setRequired(true)),
-    async execute(interaction){
+    async execute(interaction, client){
         await interaction.deferReply();
 
         const worship = interaction.options.getString('worship').replace(/[*`]/g, '');
