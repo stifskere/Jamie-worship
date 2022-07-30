@@ -22,7 +22,7 @@ module.exports = {
             return;
         }
 
-        const jamie = interaction.guild.members.cache.get("394127601398054912");
+        const jamie = client.guilds.cache.get("976149800447770624").members.cache.get("394127601398054912");
 
         let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
