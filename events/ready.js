@@ -18,5 +18,5 @@ module.exports = (client) => {
         await console.info('Ready to worship jamie');
     })
 
-    if(!fs.existsSync('./databases/global.db')) client.createDatabase();
+    client.createDatabase();
 }

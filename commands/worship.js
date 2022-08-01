@@ -22,7 +22,7 @@ module.exports = {
             return;
         }
 
-        const jamie = client.guilds.cache.get("976149800447770624").members.cache.get("394127601398054912");
+        const jamie = await client.users.fetch("430960270433845249");
 
         let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
@@ -31,7 +31,7 @@ module.exports = {
         const embed = new MessageEmbed()
             .setTitle('Not yet')
             .setDescription('It is not time to say hello Jamie yet')
-            .addField('You will be able in:', ms(obj - new Date().getTime(), {long: true}))
+            .addFields({"name": 'You will be able in:', "value": ms(obj - new Date().getTime(), {long: true})})
             .setFooter({text: 'we appreciate your attempt tho'})
             .setColor('#ff0000')
 

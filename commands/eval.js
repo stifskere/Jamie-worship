@@ -35,17 +35,22 @@ module.exports = {
             const evalEmbed = new MessageEmbed()
                 .setTitle('EVAL')
                 .setColor('#2bde00')
-                .addField('Expression', `\`\`\`js\n${expression}\n\`\`\``)
-                .addField('Result', `\`\`\`js\n${cleaned}\n\`\`\``)
+                .addFields(
+                    {"name": 'Expression', "value": `\`\`\`js\n${expression}\n\`\`\``},
+                    {"name": 'Result', "value": `\`\`\`js\n${cleaned}\n\`\`\``}
+                )
                 .setTimestamp()
 
             await interaction.editReply({embeds: [evalEmbed]});
         }catch(error){
+            // noinspection JSCheckFunctionSignatures
             const evalEmbed = new MessageEmbed()
                 .setTitle('ERROR')
                 .setColor('#ff0000')
-                .addField('Expression', `\`\`\`js\n${expression}\n\`\`\``)
-                .addField('Result', `\`\`\`xl\n${error}\n\`\`\``)
+                .addFields(
+                    {"name": 'Expression', "value": `\`\`\`js\n${expression}\n\`\`\``},
+                    {"name": 'Result', "value": `\`\`\`xl\n${error}\n\`\`\``}
+                )
                 .setTimestamp()
 
             await interaction.editReply({embeds: [evalEmbed]});
