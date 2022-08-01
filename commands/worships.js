@@ -1,8 +1,5 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
-const path = require("path");
 const {MessageEmbed, MessageButton, MessageActionRow} = require("discord.js");
-const ms = require("ms");
-const sqlite = require('sqlite3').verbose();
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,8 +12,6 @@ module.exports = {
             .setRequired(false)),
     async execute(interaction, client){
         await interaction.deferReply();
-
-        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
 
         let order = await interaction.options.getString('order');
 
@@ -37,7 +32,7 @@ module.exports = {
             customId: forwardId
         })
 
-        await db.all("SELECT * FROM Worshippers " + `ORDER BY Id ${order}`, async (err, rows) => {
+        await client.db.all("SELECT * FROM Worshippers " + `ORDER BY Id ${order}`, async (err, rows) => {
             if(err) console.log(err);
 
             if(rows.length === 0){
@@ -88,6 +83,5 @@ module.exports = {
                 })
             })
         })
-        db.close();
     }
 }

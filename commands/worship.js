@@ -1,8 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {MessageEmbed} = require("discord.js");
 const ms = require('ms')
-const sqlite = require('sqlite3').verbose();
-const path = require('path');
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -23,8 +22,6 @@ module.exports = {
         }
 
         const jamie = await client.users.fetch("430960270433845249");
-
-        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
 
         const obj = 1653156000 * 1000
 
@@ -49,7 +46,7 @@ module.exports = {
 
             if(new Date().getTime() > obj){
                 try{
-                    db.run(`INSERT INTO Worshippers VALUES (?, ?, ?, null)`, [interaction.user.id, worship, interaction.guild.name])
+                    client.db.run(`INSERT INTO Worshippers VALUES (?, ?, ?, null)`, [interaction.user.id, worship, interaction.guild.name])
                     await interaction.editReply({embeds: [embed2]})
                     if(typeof jamie === 'object'){
                         const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"]
@@ -65,6 +62,5 @@ module.exports = {
             }else{
                 await interaction.editReply({embeds: [embed]})
             }
-        db.close();
     }
 }

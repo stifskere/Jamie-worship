@@ -1,6 +1,4 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
-const path = require("path");
-const sqlite = require('sqlite3').verbose();
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('reply')
@@ -29,9 +27,7 @@ module.exports = {
             return;
         }
 
-        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
-
-        db.all(`SELECT * FROM Worshippers WHERE Id = ${worshipId}`, async (err, row) => {
+        client.db.all(`SELECT * FROM Worshippers WHERE Id = ${worshipId}`, async (err, row) => {
             if(!row){
                 await interaction.editReply({content: `A worship for this ID doesn\'t exist.`})
                 return;

@@ -1,7 +1,5 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
 const {MessageEmbed, MessageAttachment} = require("discord.js");
-const path = require("path");
-const sqlite = require("sqlite3").verbose();
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('jamie')
@@ -26,8 +24,6 @@ module.exports = {
             })
         }
 
-        let db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
-
         setTimeout(async () => {
             const jamieObject = await client.users.fetch("394127601398054912");
             const isJamieObject = typeof jamieObject === "object";
@@ -39,9 +35,9 @@ module.exports = {
                     pfp: (isJamieObject) ? jamieObject.avatarURL() : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
                 }
 
-                db.all(`SELECT count(*) FROM Worshippers`, async (err, WorshippersCountrow) => {
-                    db.all(`SELECT * FROM JamieInfo WHERE Key = 'messageNum'`, async (err, MessageNumRow) => {
-                        db.all(`SELECT * FROM JamieInfo WHERE Key = 'LastMessage'`, async (err, LastMessageRow) => {
+                client.db.all(`SELECT count(*) FROM Worshippers`, async (err, WorshippersCountrow) => {
+                    client.db.all(`SELECT * FROM JamieInfo WHERE Key = 'messageNum'`, async (err, MessageNumRow) => {
+                        client.db.all(`SELECT * FROM JamieInfo WHERE Key = 'LastMessage'`, async (err, LastMessageRow) => {
                             const embed = new MessageEmbed()
                                 .setTitle('Jamie')
                                 .setDescription(`**Jamie\'s tag:** ${jamie.tag}\n**Jamie\'s id:** ${jamie.id}\n\nHe lives in UK even tho he says he doesn\'t`)

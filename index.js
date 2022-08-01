@@ -1,11 +1,15 @@
 const { Client, Collection } = require('discord.js')
 require('dotenv').config()
 const fs = require('node:fs')
+const path = require("path");
+const sqlite = require("sqlite3").verbose();
 require('@memw/betterconsole')();
 
 const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}})
 
 client.login(process.env.TOKEN)
+
+client.db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
 
 for (const file of fs.readdirSync('./functions').filter(file => file.endsWith(".js"))){
     client[file.slice(0, -3)] = require(`./functions/${file}`);

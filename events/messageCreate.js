@@ -1,5 +1,4 @@
 const {MessageEmbed, MessageButton, MessageActionRow} = require("discord.js");
-const {ButtonBuilder, ActionRowBuilder} = require("@discordjs/builders");
 module.exports = async (client, message) => {
     if(message.author.bot) return;
 
@@ -10,6 +9,12 @@ module.exports = async (client, message) => {
             .setTitle('Jamie said something')
             .setDescription(`**He said:** ${message.content}\n**In:** ${message.guild.name}`)
             .setFooter({text: 'I\'l keep whatever our god says in here'});
+
+        client.db.run(`UPDATE JamieInfo SET Value = '${message}' WHERE Key = 'LastMessage'`)
+
+        client.db.all(`SELECT * FROM JamieInfo WHERE Key = 'messageNum'`, (err, row) => {
+            client.db.run(`UPDATE JamieInfo SET Value = '${parseInt(row[0].Value) + 1}' WHERE Key = 'messageNum'`)
+        })
 
         client.guilds.cache.get('976149800447770624').channels.cache.get('976832701015420998').send({embeds: [embed], components: [buttonActionRow]});
         return;

@@ -1,5 +1,4 @@
 const childProcess = require("node:child_process");
-const fs = require("node:fs");
 
 module.exports = (client) => {
     const statuses = ["Whatever Jamie is doing", "Jamie", "Jamie again", "Jamie my beloved"]
@@ -17,6 +16,15 @@ module.exports = (client) => {
         await console.log(stdout)
         await console.info('Ready to worship jamie');
     })
+
+    /*client.guilds.cache.forEach(guild => {
+        guild.channels.cache.forEach(async channel => {
+            if(!channel.isText()) return;
+            let msg = await channel.messages.fetch();
+            msg = msg.filter(m => m.author.id === '394127601398054912');
+            client.db.run(`UPDATE JamieInfo SET Value = '${msg.size}' WHERE Key = 'messageNum'`);
+        })
+    })*/
 
     client.createDatabase();
 }
