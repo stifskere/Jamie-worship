@@ -10,7 +10,7 @@ module.exports = {
 
     async execute(interaction, client){
         await interaction.deferReply({ephemeral: true});
-        const jamieObject = client.guilds.cache.get('976149800447770624').members.cache.get("394127601398054912").user
+        const jamieObject = await client.users.fetch("394127601398054912")
         const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif')
 
         try{

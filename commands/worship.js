@@ -21,7 +21,7 @@ module.exports = {
             return;
         }
 
-        const jamie = await client.users.fetch("430960270433845249");
+        const jamie = await client.users.fetch("394127601398054912");
 
         const obj = 1653156000 * 1000
 
