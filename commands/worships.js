@@ -69,10 +69,10 @@ module.exports = {
 
             let currentIndex = 0;
 
-            collector.on('collect', async interactionn => {
-                if(interactionn.user.id !== interaction.user.id) return interactionn.reply({content: 'This interaction is not yours, run \'/worshippers\'.', ephemeral: true})
-                interactionn.customId === backId ? (currentIndex -= 5) : (currentIndex += 5)
-                await interactionn.update({
+            collector.on('collect', async buttonInteraction => {
+                if(buttonInteraction.user.id !== interaction.user.id) return buttonInteraction.reply({content: 'This interaction is not yours, run \'/worshippers\'.', ephemeral: true})
+                buttonInteraction.customId === backId ? (currentIndex -= 5) : (currentIndex += 5)
+                await buttonInteraction.update({
                     embeds: [await gEmbed(currentIndex)],
                     components: [new MessageActionRow({
                         components: [

@@ -9,8 +9,6 @@ const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REA
 
 client.login(process.env.TOKEN)
 
-client.db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
-
 for (const file of fs.readdirSync('./functions').filter(file => file.endsWith(".js"))){
     client[file.slice(0, -3)] = require(`./functions/${file}`);
 }

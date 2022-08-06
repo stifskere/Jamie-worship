@@ -56,6 +56,7 @@ module.exports = {
                             console.warn("jamie blocked the bot, couldn't send the worship message")
                         }
                     }
+                    client.botStats.worshipsNum++;
                 }catch{
                     await interaction.editReply({embeds: [embed3]})
                 }

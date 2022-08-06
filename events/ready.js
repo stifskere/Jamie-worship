@@ -17,14 +17,6 @@ module.exports = (client) => {
         await console.info('Ready to worship jamie');
     })
 
-    /*client.guilds.cache.forEach(guild => {
-        guild.channels.cache.forEach(async channel => {
-            if(!channel.isText()) return;
-            let msg = await channel.messages.fetch();
-            msg = msg.filter(m => m.author.id === '394127601398054912');
-            client.db.run(`UPDATE JamieInfo SET Value = '${msg.size}' WHERE Key = 'messageNum'`);
-        })
-    })*/
-
     client.createDatabase();
+    client.clientVariables(client);
 }
