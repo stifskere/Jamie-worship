@@ -27,7 +27,7 @@ module.exports = {
         const statsEmbed = new MessageEmbed()
             .setTitle("Bot stats")
             .setDescription("This shows the current bot stats since the last bot restart.")
-            .addFields({name: "🔹 General stats", value: `**Current up time:** ${new Date(client.uptime).toISOString().slice(14, 19)}\n**Worships sent:** ${client.botStats.worshipsNum}\n**Total commands used:** ${client.botStats.commandCount}`},
+            .addFields({name: "🔹 General stats", value: `**Current up time:** ${new Date(client.uptime).toISOString().slice(11, 19)}\n**Worships sent:** ${client.botStats.worshipsNum}\n**Total commands used:** ${client.botStats.commandCount}`},
                 {name: "🔹 detailed command usage", value: `\`\`\`\n${usedCommandsString}\`\`\``})
             .setColor('RANDOM')
             .setFooter({text: "Report any errors to Memw#6969"})
