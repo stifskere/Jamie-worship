@@ -5,8 +5,7 @@ module.exports = async (client, interaction) => {
     if(!command) return;
     if(command.disabled === true) return interaction.reply({content: 'This command is disabled.', ephemeral: true});
     await command.execute(interaction, client);
-    let interactionOptions;
-    try{interactionOptions = interaction.options.getSubcommand();}catch{interactionOptions = null;}
+    let interactionOptions = interaction.options.getSubcommand(false)
     client.botStats.commandUsage[`${interaction.commandName}${interactionOptions ? interactionOptions : ""}`] = (client.botStats.commandUsage[`${interaction.commandName}${interactionOptions ? interactionOptions : ""}`] || 0) + 1;
     client.botStats.commandCount++;
 }
