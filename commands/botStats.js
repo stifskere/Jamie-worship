@@ -1,6 +1,5 @@
-const {SlashCommandBuilder, EmbedBuilder} = require("@discordjs/builders");
+const {SlashCommandBuilder} = require("@discordjs/builders");
 const {MessageEmbed} = require("discord.js");
-const moment = require("moment")
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("bot")
@@ -24,10 +23,14 @@ module.exports = {
             usedCommandsString = "No commands used yet.";
         }
 
+        const seconds = client.uptime / 1000, minutes = seconds / 60, hours = minutes / 60, days = hours / 24,
+        fSeconds = Math.floor(seconds) % 60, fMinutes = Math.floor(minutes) % 60, fHours = Math.floor(hours) % 60, fDays = Math.floor(days),
+        parsedString = `${fDays !== 0 ? `${fDays<10 ? "0"+fDays : fDays} day${fDays === 1 ? "" : "s"},` : ""} ${fHours !== 0 ? `${fHours<10 ? "0"+fHours : fHours} hour${fHours === 1 ? "" : "s"},` : ""} ${fMinutes !== 0 ? `${fMinutes<10 ? "0"+fMinutes : fMinutes} minute${fMinutes === 1 ? "" : "s"},` : ""} ${fSeconds<10 ? "0"+fSeconds : fSeconds} second${fSeconds === 1 ? "" : "s"}`
+
         const statsEmbed = new MessageEmbed()
             .setTitle("Bot stats")
             .setDescription("This shows the current bot stats since the last bot restart.")
-            .addFields({name: "🔹 General stats", value: `**Current up time:** ${new Date(client.uptime).toISOString().slice(11, 19)}\n**Worships sent:** ${client.botStats.worshipsNum}\n**Total commands used:** ${client.botStats.commandCount}`},
+            .addFields({name: "🔹 General stats", value: `**Current up time:** ${parsedString}\n**Worships sent:** ${client.botStats.worshipsNum}\n**Total commands used:** ${client.botStats.commandCount}`},
                 {name: "🔹 detailed command usage", value: `\`\`\`\n${usedCommandsString}\`\`\``})
             .setColor('RANDOM')
             .setFooter({text: "Report any errors to Memw#6969"})
