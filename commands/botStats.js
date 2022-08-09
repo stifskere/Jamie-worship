@@ -12,7 +12,6 @@ module.exports = {
         if(client.botStats.commandCount > 0){
             Object.entries(client.botStats.commandUsage).forEach(entry => {
                 const [key, value] = entry;
-                console.log(key)
                 let countAddition = ".........................";
                 const parsedKey = key.replace(/((?<=\p{Upper})\p{Lower})|((?!^)\p{Upper}(?=\p{Lower}))/gu, ' $0');
                 countAddition = `${parsedKey}${countAddition.substring(parsedKey.length)}`;
