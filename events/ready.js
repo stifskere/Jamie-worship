@@ -9,7 +9,7 @@ module.exports = (client) => {
         if(i >= statuses.length) i = 0;
         try{client.user.setActivity(statuses[i], {type: 'WATCHING'});}catch{}
         i++;
-    }, 60000)
+    }, 3600000)
 
     childProcess.exec('node register.js', async (err, stdout) => {
         if(err) return console.log(`There was an error on registering commands:\n${err}`);
