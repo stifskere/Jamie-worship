@@ -23,7 +23,7 @@ module.exports = {
         }
 
         const seconds = client.uptime / 1000, minutes = seconds / 60, hours = minutes / 60, days = hours / 24,
-        fSeconds = Math.floor(seconds) % 60, fMinutes = Math.floor(minutes) % 60, fHours = Math.floor(hours) % 60, fDays = Math.floor(days),
+        fSeconds = Math.floor(seconds) % 60, fMinutes = Math.floor(minutes) % 60, fHours = Math.floor(hours) % 60, fDays = Math.floor(days) % 24,
         parsedString = `${fDays !== 0 ? `${fDays<10 ? "0"+fDays : fDays} day${fDays === 1 ? "" : "s"},` : ""} ${fHours !== 0 ? `${fHours<10 ? "0"+fHours : fHours} hour${fHours === 1 ? "" : "s"},` : ""} ${fMinutes !== 0 ? `${fMinutes<10 ? "0"+fMinutes : fMinutes} minute${fMinutes === 1 ? "" : "s"},` : ""} ${fSeconds<10 ? "0"+fSeconds : fSeconds} second${fSeconds === 1 ? "" : "s"}`
 
         const statsEmbed = new MessageEmbed()
