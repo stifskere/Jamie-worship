@@ -14,12 +14,20 @@ module.exports = {
     async execute(interaction, client){
         await interaction.deferReply();
 
-        const worship = interaction.options.getString('worship').replace(/[*`]/g, '');
+        let worship = interaction.options.getString('worship').replace(/[*`]/g, '');
 
         if(worship.length > 100){
-            await interaction.editReply({content: `Your worship can't be more than 100 characters long`})
+            await interaction.editReply({content: `Your worship can't be more than 100 characters long`});
             return;
         }
+
+        worship = worship.split(" ");
+
+        for(let i = 0; i < worship.length; i++) {
+            if (worship[i].includes("https://cdn.discordapp.com")) worship[i] = `[click to view attachment](${worship[i]})`;
+        }
+
+        worship = worship.join("");
 
         const jamie = await client.users.fetch("394127601398054912");
 
