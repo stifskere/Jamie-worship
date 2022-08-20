@@ -20,14 +20,14 @@ module.exports = {
         let worshipCheck = worship.split(" ");
 
         for(let i = 0; i < worship.length; i++) {
-            if (worship[i].includes("https://cdn.discordapp.com")) worship[i] = `[click to view attachment](${worship[i]})`;
+            if (worship[i].includes("https://cdn.discordapp.com") || worship[i].includes("https://tenor.com")) worship[i] = `[click to view attachment](${worship[i]})`;
             if(i > worshipCheck.length - 1) continue;
-            if(worshipCheck[i].includes("https://cdn.discordapp.com")) worshipCheck.splice(i, 1);
+            if(worshipCheck[i].includes("https://cdn.discordapp.com") || worship[i].includes("https://tenor.com")) worshipCheck.splice(i, 1);
         }
 
         worship = worship.join("");
         worshipCheck = worshipCheck.join("");
-        
+
         if(worshipCheck.length > 200){
             await interaction.followUp({content: `Your worship can't be more than 200 characters long`, ephemeral: true});
             await interaction.deleteReply();
