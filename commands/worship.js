@@ -16,8 +16,8 @@ module.exports = {
 
         let worship = interaction.options.getString('worship').replace(/[*`]/g, '');
 
-        worship = worship.split(" ");
         let worshipCheck = worship.split(" ");
+        worship = worship.split(" ");
 
         for(let i = 0; i < worship.length; i++) {
             if (worship[i].includes("https://cdn.discordapp.com") || worship[i].includes("https://tenor.com")) worship[i] = `[click to view attachment](${worship[i]})`;
