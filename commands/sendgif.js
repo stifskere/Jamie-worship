@@ -1,5 +1,5 @@
 const {SlashCommandBuilder, EmbedBuilder} = require("@discordjs/builders");
-const {MessageAttachment} = require("discord.js");
+const {MessageAttachment, MessageEmbed} = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('send')
@@ -13,10 +13,10 @@ module.exports = {
         const jamieObject = await client.users.fetch("394127601398054912");
         const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif');
 
-        const jamieEmbed = new EmbedBuilder()
+        const jamieEmbed = new MessageEmbed()
             .setTitle("Jamie gif sent to jamie")
             .setDescription("Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie")
-            .setColor("RANDOM");
+            .setColor('RANDOM');
 
         try{
             jamieObject.send({content: `**From:** ${interaction.user.tag}`, files: [photo]});
