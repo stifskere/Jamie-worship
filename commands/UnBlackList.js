@@ -7,11 +7,11 @@ module.exports = {
 
     async execute(interaction, client){
         if(!client.worshipModerators.includes(interaction.user.id)){
-            await interaction.reply({content: "You cannot remove worshippers from blacklist, you need to be a JamieWorship moderator."});
+            await interaction.reply({content: "You cannot remove worshippers from blacklist, you need to be a JamieWorship moderator.", ephemeral: true});
             return;
         }
         if(client.worshipModerators.includes(interaction.targetUser.id)){
-            await interaction.reply({content: "This user is a moderator, which is not blacklisted."});
+            await interaction.reply({content: "This user is a moderator, which is not blacklisted.", ephemeral: true});
             return;
         }
         client.db.all(`SELECT id FROM BlackListedUsers WHERE id = '${interaction.targetUser.id}'`, async (err, rows) => {
