@@ -14,6 +14,15 @@ module.exports = {
     async execute(interaction, client){
         await interaction.deferReply();
 
+        let worshipAble = true;
+        client.db.all(`SELECT id FROM BlackListedUsers WHERE id = '${interaction.user.id}'`, (err, rows) => {
+            if(rows.length !== 0) worshipAble = false;
+        });
+        if(!worshipAble){
+            await interaction.editReply({content: 'You are not able to worship, you are in the blacklist, to appeal go to this link https://rb.gy/enaq3a'});
+            return;
+        }
+
         let worship = interaction.options.getString('worship').replace(/[*`]/g, '');
 
         let worshipCheck = worship.split(" ");

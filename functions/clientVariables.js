@@ -8,4 +8,5 @@ module.exports = (client) => {
         worshipsNum: 0,
         commandCount: 0
     }
+    client.worshipModerators = ['394127601398054912', '189495219383697409', '463986224101588992', '423565487121629196'];
 }

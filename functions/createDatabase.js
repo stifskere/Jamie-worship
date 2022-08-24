@@ -12,6 +12,7 @@ module.exports = async () => {
     db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE)
     await db.run(`CREATE TABLE IF NOT EXISTS Worshippers(UserID VARCHAR NOT NULL, Worship VARCHAR NOT NULL, Guild VARCHAR NOT NULL, Id INTEGER PRIMARY KEY AUTOINCREMENT)`)
     await db.run(`CREATE TABLE IF NOT EXISTS JamieInfo(Key VARCHAR NOT NULL, Value VARCHAR NOT NULL, unique(Key))`)
+    await db.run(`CREATE TABLE IF NOT EXISTS BlackListedUsers(id VARCHAR NOT NULL, unique(id))`)
     await fillJamieInfoDataBase();
 }
 
