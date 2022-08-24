@@ -38,7 +38,7 @@ module.exports = {
             .setDescription("This shows the current bot stats since the last bot restart.")
             .addFields({name: "🔹 General stats", value: `**Current up time:** ${parsedString}\n**Worships sent:** ${client.botStats.worshipsNum}\n**Total commands used:** ${client.botStats.commandCount}`},
                 {name: "🔹 detailed command usage", value: `\`\`\`\n${usedCommandsString}\`\`\``},
-                {name: "🔹 GitHub status", value: `**Commits:** ${commits.length}\n**Last commit name:** ${commits[0].commit.message}\n**Last commit author:** ${commits[0].commit.author.name}\n**Last commit content:** [click to view changes](${commits[0].html_url})`})
+                {name: "🔹 GitHub status", value: `**Last commit name:** ${commits[0].commit.message}\n**Last commit author:** ${commits[0].commit.author.name}\n**Last commit content:** [click to view changes](${commits[0].html_url})`})
             .setColor('RANDOM')
             .setFooter({text: "Report any errors to Memw#6969"})
             .setTimestamp()

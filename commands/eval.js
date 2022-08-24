@@ -27,7 +27,7 @@ module.exports = {
 
         try{
             if(expression.includes('process.env')) throw new Error('Environment variables are protected, no interaction with them is allowed trough eval.');
-
+            
             let cleaned = await client.cleanEval(eval(expression));
 
             if(cleaned.length > 1020) cleaned = cleaned.substring(0, 1000) + '...';
