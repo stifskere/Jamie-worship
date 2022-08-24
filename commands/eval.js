@@ -26,11 +26,11 @@ module.exports = {
         }
 
         try{
+            if(expression.includes('process.env')) throw new Error('Environment variables are protected, no interaction with them is allowed trough eval.');
+
             let cleaned = await client.cleanEval(eval(expression));
 
             if(cleaned.length > 1020) cleaned = cleaned.substring(0, 1000) + '...';
-
-            if(cleaned.includes(process.env.TOKEN)) cleaned = 'bingus won\'t see the token';
 
             const evalEmbed = new MessageEmbed()
                 .setTitle('EVAL')
@@ -43,7 +43,6 @@ module.exports = {
 
             await interaction.editReply({embeds: [evalEmbed]});
         }catch(error){
-            // noinspection JSCheckFunctionSignatures
             const evalEmbed = new MessageEmbed()
                 .setTitle('ERROR')
                 .setColor('#ff0000')
