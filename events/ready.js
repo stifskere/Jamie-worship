@@ -7,7 +7,7 @@ export default async (client) => {
 
     setInterval(async () => {
         if(i >= statuses.length) i = 0;
-        await client.user.setActivity(statuses[i], {type: 'WATCHING'}).catch();
+        (await client.user.setActivity(statuses[i], {type: 'WATCHING'})).catch();
         i++;
     }, 3600000);
 
