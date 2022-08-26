@@ -65,7 +65,7 @@ export default {
                         client.db.all("SELECT * FROM Worshippers ORDER BY Id DESC", async (err, rows) => {
                             if(typeof jamie === 'object'){
                                 const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"];
-                                await jamie.send({embeds:  [new EmbedBuilder().setTitle(arrPhrases[Math.floor(Math.random() * arrPhrases.length)]).addFields({name: "They said", value: worship}).setFooter({text: `The ID of this worship is ${rows[0].id}`})]})
+                                await jamie.send({embeds:  [new EmbedBuilder().setTitle(arrPhrases[Math.floor(Math.random() * arrPhrases.length)]).addFields({name: "They said", value: worship}).setFooter({text: `The ID of this worship is ${rows[0].Id}`})]})
                                     .catch(() => console.warn("jamie blocked the bot, couldn't send the worship message"));
                             }
                         })

@@ -1,9 +1,9 @@
-import { Client, Collection } from 'discord.js';
+import {Client, Collection, GatewayIntentBits} from 'discord.js';
 import * as fs from 'node:fs';
 (await import('dotenv')).config();
 (await import('@memw/betterconsole')).load();
 
-const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}})
+const client = new Client({intents: 3276799, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}})
 
 client.login(process.env.TOKEN)
 

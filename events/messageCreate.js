@@ -1,11 +1,10 @@
-import {EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle} from "discord.js";
+import {EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ChannelType} from "discord.js";
 
 export default async (client, message) => {
     if(message.author.bot) return;
 
-    if(message.author.id === '394127601398054912'){
+    if(message.author.id === '394127601398054912' && message.channel.type !== ChannelType.DM){
         const buttonActionRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel("Go to message").setURL(message.url));
-
         const embed = new EmbedBuilder()
             .setTitle('Jamie said something')
             .setDescription(`**He said:** ${message.content}\n**In:** ${message.guild.name}`)
