@@ -1,11 +1,11 @@
-const {MessageEmbed, MessageButton, MessageActionRow} = require("discord.js");
+const {EmbedBuilder, ButtonBuilder, ActionRowBuilder} = require("discord.js");
 module.exports = async (client, message) => {
     if(message.author.bot) return;
 
     if(message.author.id === '394127601398054912'){
-        const buttonActionRow = new MessageActionRow().addComponents(new MessageButton().setStyle('LINK').setLabel("Go to message").setURL(message.url));
+        const buttonActionRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setStyle('LINK').setLabel("Go to message").setURL(message.url));
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle('Jamie said something')
             .setDescription(`**He said:** ${message.content}\n**In:** ${message.guild.name}`)
             .setFooter({text: 'I\'l keep whatever our god says in here'});

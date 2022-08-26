@@ -1,8 +1,6 @@
 const { Client, Collection } = require('discord.js')
 require('dotenv').config()
 const fs = require('node:fs')
-const path = require("path");
-const sqlite = require("sqlite3").verbose();
 require('@memw/betterconsole')();
 
 const client = new Client({intents: 32767, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}})

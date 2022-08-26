@@ -5,9 +5,9 @@ module.exports = (client) => {
 
     let i = 0;
 
-    setInterval(() => {
+    setInterval(async () => {
         if(i >= statuses.length) i = 0;
-        try{client.user.setActivity(statuses[i], {type: 'WATCHING'});}catch{}
+        await client.user.setActivity(statuses[i], {type: 'WATCHING'}).catch();
         i++;
     }, 3600000)
 
