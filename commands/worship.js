@@ -1,8 +1,7 @@
-const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
-const ms = require('ms')
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import ms from "ms";
 
-
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('worship')
         .setDescription('worship Jamie')

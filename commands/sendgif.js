@@ -1,5 +1,6 @@
-const {AttachmentBuilder, EmbedBuilder, SlashCommandBuilder} = require("discord.js");
-module.exports = {
+import {AttachmentBuilder, EmbedBuilder, SlashCommandBuilder} from "discord.js";
+
+export default {
     data: new SlashCommandBuilder()
         .setName('send')
         .setDescription('send')

@@ -1,6 +1,6 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType } = require("discord.js");
+import { ContextMenuCommandBuilder, ApplicationCommandType } from "discord.js";
 
-module.exports = {
+export default {
     data: new ContextMenuCommandBuilder()
         .setName('Remove from blacklist')
         .setType(ApplicationCommandType.User),

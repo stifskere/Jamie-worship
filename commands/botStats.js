@@ -1,7 +1,7 @@
-const { EmbedBuilder , SlashCommandBuilder } = require("discord.js");
-const axios = require('axios');
+import { EmbedBuilder , SlashCommandBuilder } from "discord.js";
+import axios from "axios";
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName("bot")
         .setDescription("Bot status command group")

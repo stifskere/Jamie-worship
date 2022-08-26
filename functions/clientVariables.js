@@ -1,7 +1,7 @@
-const path = require("path");
-const sqlite = require("sqlite3").verbose()
+import * as path from "node:path";
+const sqlite = (await import("sqlite3")).default.verbose();
 
-module.exports = (client) => {
+export default (client) => {
     client.db = new sqlite.Database(path.join(path.resolve('./databases/'), `global.db`), sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
     client.botStats = {
         commandUsage: {},

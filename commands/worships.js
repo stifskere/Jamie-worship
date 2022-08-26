@@ -1,6 +1,6 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, SlashCommandBuilder } = require("discord.js");
+import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, SlashCommandBuilder } from "discord.js";
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('worships')
         .setDescription('Check other\'s worships')

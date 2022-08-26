@@ -1,5 +1,6 @@
-const {EmbedBuilder, ButtonBuilder, ActionRowBuilder} = require("discord.js");
-module.exports = async (client, message) => {
+import {EmbedBuilder, ButtonBuilder, ActionRowBuilder} from "discord.js";
+
+export default async (client, message) => {
     if(message.author.bot) return;
 
     if(message.author.id === '394127601398054912'){

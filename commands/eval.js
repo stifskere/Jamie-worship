@@ -1,6 +1,7 @@
-const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
-require('dotenv').config()
-module.exports = {
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+(await import('dotenv')).config()
+
+export default {
     data: new SlashCommandBuilder()
         .setName('eval')
         .setDescription('Evaluates a javascript expression')
