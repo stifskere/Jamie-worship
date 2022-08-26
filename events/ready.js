@@ -1,5 +1,3 @@
-import * as childProcess from "node:child_process";
-
 export default async (client) => {
     const statuses = ["Whatever Jamie is doing", "Jamie", "Jamie again", "Jamie my beloved"]
 
