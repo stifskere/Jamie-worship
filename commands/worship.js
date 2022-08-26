@@ -26,8 +26,8 @@ export default {
                     if(worshipCheck[i].includes("https://cdn.discordapp.com") || worship[i].includes("https://tenor.com")) worshipCheck.splice(i, 1);
                 }
 
-                worship = worship.join("");
-                worshipCheck = worshipCheck.join("");
+                worship = worship.join(" ");
+                worshipCheck = worshipCheck.join(" ");
 
                 if(worshipCheck.length > 200){
                     await interaction.followUp({content: `Your worship can't be more than 200 characters long`, ephemeral: true});
@@ -62,16 +62,16 @@ export default {
                     try{
                         client.db.run(`INSERT INTO Worshippers VALUES (?, ?, ?, null)`, [interaction.user.id, worship, interaction.guild.name])
                         await interaction.editReply({embeds: [embed2]})
-                        if(typeof jamie === 'object'){
-                            const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"]
-                            try{
-                                jamie.send(`${arrPhrases[Math.floor(Math.random() * arrPhrases.length)]}\nThey said: ${worship}`)
-                            }catch{
-                                console.warn("jamie blocked the bot, couldn't send the worship message")
+                        client.db.all("SELECT * FROM Worshippers ORDER BY Id DESC", async (err, rows) => {
+                            if(typeof jamie === 'object'){
+                                const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"];
+                                await jamie.send({embeds:  [new EmbedBuilder().setTitle(arrPhrases[Math.floor(Math.random() * arrPhrases.length)]).addFields({name: "They said", value: worship}).setFooter({text: `The ID of this worship is ${rows[0].id}`})]})
+                                    .catch(() => console.warn("jamie blocked the bot, couldn't send the worship message"));
                             }
-                        }
+                        })
                         client.botStats.worshipsNum++;
-                    }catch{
+                    }catch(e){
+                        console.normalLog(e);
                         await interaction.editReply({embeds: [embed3]})
                     }
                 }else{

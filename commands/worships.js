@@ -1,4 +1,4 @@
-import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, SlashCommandBuilder } from "discord.js";
+import {EmbedBuilder, ButtonBuilder, ActionRowBuilder, SlashCommandBuilder, ButtonStyle} from "discord.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -19,13 +19,13 @@ export default {
         const backId = 'back'
         const forwardId = 'forward'
         const backButton = new ButtonBuilder({
-            style: 'SECONDARY',
+            style: ButtonStyle.Secondary,
             label: 'Back',
             emoji: '⬅️',
             customId: backId
         })
         const forwardButton = new ButtonBuilder({
-            style: 'SECONDARY',
+            style: ButtonStyle.Secondary,
             label: 'Forward',
             emoji: '➡️',
             customId: forwardId

@@ -1,10 +1,10 @@
-import {EmbedBuilder, ButtonBuilder, ActionRowBuilder} from "discord.js";
+import {EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle} from "discord.js";
 
 export default async (client, message) => {
     if(message.author.bot) return;
 
     if(message.author.id === '394127601398054912'){
-        const buttonActionRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setStyle('LINK').setLabel("Go to message").setURL(message.url));
+        const buttonActionRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel("Go to message").setURL(message.url));
 
         const embed = new EmbedBuilder()
             .setTitle('Jamie said something')
