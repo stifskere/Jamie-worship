@@ -1,5 +1,4 @@
-const {SlashCommandBuilder} = require("@discordjs/builders");
-const {MessageEmbed} = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 require('dotenv').config()
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,7 +16,7 @@ module.exports = {
         const evalers = ['189495219383697409', '463986224101588992']
 
         if(!evalers.includes(interaction.user.id)){
-            const errEmbed = new MessageEmbed()
+            const errEmbed = new EmbedBuilder()
                 .setTitle('ERROR')
                 .setDescription('You do not have permission to use this command')
 
@@ -32,9 +31,9 @@ module.exports = {
 
             if(cleaned.length > 1020) cleaned = cleaned.substring(0, 1000) + '...';
 
-            const evalEmbed = new MessageEmbed()
+            const evalEmbed = new EmbedBuilder()
                 .setTitle('EVAL')
-                .setColor('#2bde00')
+                .setColor(0x00ff00)
                 .addFields(
                     {"name": 'Expression', "value": `\`\`\`js\n${expression}\n\`\`\``},
                     {"name": 'Result', "value": `\`\`\`js\n${cleaned}\n\`\`\``}
@@ -43,9 +42,9 @@ module.exports = {
 
             await interaction.editReply({embeds: [evalEmbed]});
         }catch(error){
-            const evalEmbed = new MessageEmbed()
+            const evalEmbed = new EmbedBuilder()
                 .setTitle('ERROR')
-                .setColor('#ff0000')
+                .setColor(0xff0000)
                 .addFields(
                     {"name": 'Expression', "value": `\`\`\`js\n${expression}\n\`\`\``},
                     {"name": 'Result', "value": `\`\`\`xl\n${error}\n\`\`\``}

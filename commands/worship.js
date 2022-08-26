@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const {MessageEmbed} = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const ms = require('ms')
 
 
@@ -41,24 +40,24 @@ module.exports = {
 
                 const obj = 1653156000 * 1000
 
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setTitle('Not yet')
                     .setDescription('It is not time to say hello Jamie yet')
                     .addFields({"name": 'You will be able in:', "value": ms(obj - new Date().getTime(), {long: true})})
                     .setFooter({text: 'we appreciate your attempt tho'})
-                    .setColor('#ff0000')
+                    .setColor(0xff0000)
 
-                const embed2 = new MessageEmbed()
+                const embed2 = new EmbedBuilder()
                     .setTitle('Worship sent')
                     .setDescription(`Your worship was sent successfully\nyou sent: ${worship}`)
                     .setFooter({text: 'You can check others worships using /worships'})
-                    .setColor('#2bde00')
+                    .setColor(0x2bde00)
 
-                const embed3 = new MessageEmbed()
+                const embed3 = new EmbedBuilder()
                     .setTitle('There was an error')
                     .setDescription('Your worship failed, sorry about that')
                     .setFooter({text: 'You can retry, you will lose nothing.'})
-                    .setColor('#ff0000')
+                    .setColor(0xff0000)
 
                 if(new Date().getTime() > obj){
                     try{

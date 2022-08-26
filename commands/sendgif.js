@@ -1,5 +1,4 @@
-const {SlashCommandBuilder, EmbedBuilder} = require("@discordjs/builders");
-const {MessageAttachment, MessageEmbed} = require("discord.js");
+const {AttachmentBuilder, EmbedBuilder, SlashCommandBuilder} = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('send')
@@ -15,12 +14,12 @@ module.exports = {
             }else{
                 await interaction.deferReply();
                 const jamieObject = await client.users.fetch("394127601398054912");
-                const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif');
+                const photo = new AttachmentBuilder('./images/helloJamie.gif', 'helloJamie.gif');
 
-                const jamieEmbed = new MessageEmbed()
+                const jamieEmbed = new EmbedBuilder()
                     .setTitle("Jamie gif sent to jamie")
                     .setDescription("Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie Jamie")
-                    .setColor('RANDOM');
+                    .setColor(Math.floor(Math.random() * 0xFFFFFF));
 
                 try{
                     jamieObject.send({content: `**From:** ${interaction.user.tag}`, files: [photo]});
@@ -29,7 +28,8 @@ module.exports = {
                     jamieEmbed
                         .setTitle("Gif was not sent to jamie :(")
                         .setDescription("No jamie No jamie No jamie No jamie No jamie No jamie No jamie No jamie No jamie No jamie No jamie No jamie")
-                        .setFooter({text: "Not enough perms."});
+                        .setFooter({text: "Not enough perms."})
+                        .setColor(0xff0000);
 
                     await interaction.editReply({embeds: [jamieEmbed]});
                 }

@@ -1,4 +1,4 @@
-const {SlashCommandBuilder} = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('reply')
@@ -19,8 +19,8 @@ module.exports = {
             return;
         }
 
-        const worshipId = await interaction.options.getInteger('id')
-        const replyContent = await interaction.options.getString('content')
+        const worshipId = interaction.options.getInteger('id')
+        const replyContent = interaction.options.getString('content')
 
         if(replyContent.length > 300){
             await interaction.editReply({content: `Your answer can't be more than 300 characters long`})

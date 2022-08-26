@@ -1,5 +1,4 @@
-const {SlashCommandBuilder} = require("@discordjs/builders");
-const {MessageEmbed, MessageButton, MessageActionRow} = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,19 +12,19 @@ module.exports = {
     async execute(interaction, client){
         await interaction.deferReply();
 
-        let order = await interaction.options.getString('order');
+        let order = interaction.options.getString('order');
 
         order ??= "ASC";
 
         const backId = 'back'
         const forwardId = 'forward'
-        const backButton = new MessageButton({
+        const backButton = new ButtonBuilder({
             style: 'SECONDARY',
             label: 'Back',
             emoji: '⬅️',
             customId: backId
         })
-        const forwardButton = new MessageButton({
+        const forwardButton = new ButtonBuilder({
             style: 'SECONDARY',
             label: 'Forward',
             emoji: '➡️',
@@ -36,10 +35,10 @@ module.exports = {
             if(err) console.log(err);
 
             if(rows.length === 0){
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                     .setTitle('No worships :(')
                     .setDescription('Sadly jamie doesn\'t have any worshippers yet\nUse `/worship` to worship jamie')
-                    .setColor('#ff0000')
+                    .setColor(0xff0000)
 
                 interaction.editReply({embeds: [embed]})
                 return
@@ -48,7 +47,7 @@ module.exports = {
             let gEmbed = async (start) => {
                 const current = rows.slice(start, start + 5)
 
-                return new MessageEmbed({
+                return new EmbedBuilder({
                     title: 'Here are all the worshippers',
                     fields: await Promise.all(
                         current.map(async worship => ({
@@ -61,7 +60,7 @@ module.exports = {
             }
 
             const canFitOnOnePage = rows.length <= 5
-            const embedMessage = await interaction.editReply({embeds: [await gEmbed(0)], components: canFitOnOnePage ? [] : [new MessageActionRow({components: [forwardButton]})], fetchReply: true})
+            const embedMessage = await interaction.editReply({embeds: [await gEmbed(0)], components: canFitOnOnePage ? [] : [new ActionRowBuilder({components: [forwardButton]})], fetchReply: true})
 
             if(canFitOnOnePage) return;
 
@@ -74,7 +73,7 @@ module.exports = {
                 buttonInteraction.customId === backId ? (currentIndex -= 5) : (currentIndex += 5)
                 await buttonInteraction.update({
                     embeds: [await gEmbed(currentIndex)],
-                    components: [new MessageActionRow({
+                    components: [new ActionRowBuilder({
                         components: [
                             ...(currentIndex ? [backButton] : []),
                             ...(currentIndex + 5 < rows.length ? [forwardButton] : [])

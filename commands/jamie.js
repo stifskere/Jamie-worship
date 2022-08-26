@@ -1,5 +1,4 @@
-const {SlashCommandBuilder} = require("@discordjs/builders");
-const {MessageEmbed, MessageAttachment} = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder, SlashCommandBuilder} = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('jamie')
@@ -35,18 +34,18 @@ module.exports = {
                     pfp: (isJamieObject) ? jamieObject.avatarURL() : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
                 }
 
-                client.db.all(`SELECT count(*) FROM Worshippers`, async (err, WorshippersCountrow) => {
+                client.db.all(`SELECT count(*) FROM Worshippers`, async (err, WorshippersCountRow) => {
                     client.db.all(`SELECT * FROM JamieInfo WHERE Key = 'messageNum'`, async (err, MessageNumRow) => {
                         client.db.all(`SELECT * FROM JamieInfo WHERE Key = 'LastMessage'`, async (err, LastMessageRow) => {
-                            const embed = new MessageEmbed()
+                            const embed = new EmbedBuilder()
                                 .setTitle('Jamie')
                                 .setDescription(`**Jamie\'s tag:** ${jamie.tag}\n**Jamie\'s id:** ${jamie.id}\n\nHe lives in UK even tho he says he doesn\'t`)
                                 .addFields(
                                     {"name": 'Jamie\'s close friends', "value": (closeFriends.length !== 0) ? closeFriends.toString().replaceAll(',', '\n') : "No close friends on this server."},
-                                    {"name": 'Jamie\'s bot stats', "value": `**Worships:** ${WorshippersCountrow[0]['count(*)']}\n**Counted messages:** ${MessageNumRow[0].Value}\n**Last message:** ${LastMessageRow[0].Value}`}
+                                    {"name": 'Jamie\'s bot stats', "value": `**Worships:** ${WorshippersCountRow[0]['count(*)']}\n**Counted messages:** ${MessageNumRow[0].Value}\n**Last message:** ${LastMessageRow[0].Value}`}
                                 )
                                 .setThumbnail(jamie.pfp)
-                                .setColor('RANDOM')
+                                .setColor(Math.floor(Math.random() * 0xFFFFFF))
 
                             if(jamie.heIS === false) embed.setFooter({text: 'The info may not be up to date since the user can\'t be fetched.'})
 
@@ -56,7 +55,7 @@ module.exports = {
                 })
             }else if(interaction.options.getSubcommand() === 'photo'){
                 try{
-                    const photo = new MessageAttachment('./images/helloJamie.gif', 'helloJamie.gif')
+                    const photo = new AttachmentBuilder('./images/helloJamie.gif', 'helloJamie.gif')
                     await interaction.channel.send({files: [photo]})
                     interaction.deleteReply();
                 }catch{
