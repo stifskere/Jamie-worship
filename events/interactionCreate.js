@@ -1,7 +1,8 @@
 import { ChannelType } from "discord.js";
 
 export default async (client, interaction) => {
-    if(!interaction) console.error('Unknown interaction, couldn\'t reply to the interaction')
+    if(process.env.PRODUCTION === "false" && !client.worshipModerators.includes(interaction.user.id)) return interaction.reply({content: "The bot is on testing mode, currently only it's developers can use slash commands", ephemeral: true});
+    if(!interaction) console.error('Unknown interaction, couldn\'t reply to the interaction');
     if(interaction.channel.type === ChannelType.DM && interaction.commandName !== "reply") return interaction.reply({content: 'No worshipping in DM allowed.', ephemeral: true});
     const command = client.commands.get(interaction.commandName);
     if(!command) return;

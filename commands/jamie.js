@@ -35,7 +35,7 @@ export default {
                     pfp: (isJamieObject) ? jamieObject.avatarURL() : "https://cdn.discordapp.com/avatars/394127601398054912/c7a08756f08ff4fa9f51cf5f63f017d0.png?size=4096"
                 }
 
-                client.db.all(`SELECT count(*) FROM Worshippers`, async (err, WorshippersCountRow) => {
+                client.db.all(`SELECT count(*) FROM Worshipers`, async (err, WorshippersCountRow) => {
                     client.db.all(`SELECT * FROM JamieInfo WHERE Key = 'messageNum'`, async (err, MessageNumRow) => {
                         client.db.all(`SELECT * FROM JamieInfo WHERE Key = 'LastMessage'`, async (err, LastMessageRow) => {
                             const embed = new EmbedBuilder()

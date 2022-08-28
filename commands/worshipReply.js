@@ -28,7 +28,7 @@ export default {
             return;
         }
 
-        client.db.all(`SELECT * FROM Worshippers WHERE Id = ${worshipId}`, async (err, row) => {
+        client.db.all(`SELECT * FROM Worshipers WHERE Id = ${worshipId}`, async (err, row) => {
             if(!row){
                 await interaction.editReply({content: `A worship for this ID doesn\'t exist.`})
                 return;

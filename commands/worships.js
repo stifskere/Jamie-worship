@@ -31,7 +31,7 @@ export default {
             customId: forwardId
         })
 
-        await client.db.all("SELECT * FROM Worshippers " + `ORDER BY Id ${order}`, async (err, rows) => {
+        await client.db.all("SELECT * FROM Worshipers " + `ORDER BY Id ${order}`, async (err, rows) => {
             if(err) console.log(err);
 
             if(rows.length === 0){

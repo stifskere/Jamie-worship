@@ -60,9 +60,9 @@ export default {
 
                 if(new Date().getTime() > obj){
                     try{
-                        client.db.run(`INSERT INTO Worshippers VALUES (?, ?, ?, null)`, [interaction.user.id, worship, interaction.guild.name])
+                        client.db.run(`INSERT INTO Worshipers VALUES (?, ?, ?, null)`, [interaction.user.id, worship, interaction.guild.name])
                         await interaction.editReply({embeds: [embed2]})
-                        client.db.all("SELECT * FROM Worshippers ORDER BY Id DESC", async (err, rows) => {
+                        client.db.all("SELECT * FROM Worshipers ORDER BY Id DESC", async (err, rows) => {
                             if(typeof jamie === 'object'){
                                 const arrPhrases = ["You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"];
                                 await jamie.send({embeds:  [new EmbedBuilder().setTitle(arrPhrases[Math.floor(Math.random() * arrPhrases.length)]).addFields({name: "They said", value: worship}).setFooter({text: `The ID of this worship is ${rows[0].Id}`})]})
