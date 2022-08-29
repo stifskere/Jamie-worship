@@ -37,26 +37,31 @@ export default {
             if(rows.length === 0){
                 const embed = new EmbedBuilder()
                     .setTitle('No worships :(')
-                    .setDescription('Sadly jamie doesn\'t have any worshippers yet\nUse `/worship` to worship jamie')
+                    .setDescription('Sadly jamie doesn\'t have any worshipers yet\nUse `/worship` to worship jamie')
                     .setColor(0xff0000)
 
                 interaction.editReply({embeds: [embed]})
                 return
             }
 
+            const color = Math.floor(Math.random() * 0xFFFFFF);
+
             let gEmbed = async (start) => {
                 const current = rows.slice(start, start + 5)
 
                 return new EmbedBuilder({
-                    title: 'Here are all the worshippers',
+                    title: 'Here are all the worshipers',
                     fields: await Promise.all(
                         current.map(async worship => ({
                             name: `User: ${(typeof client.users.cache.find(user => user.id === worship.UserID) === "object") ? client.users.cache.find(user => user.id === worship.UserID).tag : 'Unknown user'}`,
                             value: `**ID:** ${worship.Id}\n**Worship:** ${worship.Worship}\n**Guild:** ${worship.Guild}`
                         }))
                     ),
+                    color: color,
+                    footer: {
+                        text: `Showing ${start + 1}-${start + current.length} out of ${rows.length} worships`
+                    }
                 })
-                    .setFooter({text: `Showing ${start + 1}-${start + current.length} out of ${rows.length} worships`})
             }
 
             const canFitOnOnePage = rows.length <= 5
@@ -69,7 +74,7 @@ export default {
             let currentIndex = 0;
 
             collector.on('collect', async buttonInteraction => {
-                if(buttonInteraction.user.id !== interaction.user.id) return buttonInteraction.reply({content: 'This interaction is not yours, run \'/worshippers\'.', ephemeral: true})
+                if(buttonInteraction.user.id !== interaction.user.id) return buttonInteraction.reply({content: 'This interaction is not yours, run \'/worships\'.', ephemeral: true})
                 buttonInteraction.customId === backId ? (currentIndex -= 5) : (currentIndex += 5)
                 await buttonInteraction.update({
                     embeds: [await gEmbed(currentIndex)],
