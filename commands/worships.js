@@ -53,7 +53,7 @@ export default {
                     title: 'Here are all the worshipers',
                     fields: await Promise.all(
                         current.map(async worship => ({
-                            name: `User: ${(typeof client.users.cache.find(user => user.id === worship.UserID) === "object") ? client.users.cache.find(user => user.id === worship.UserID).tag : 'Unknown user'}`,
+                            name: `User: ${(typeof (await client.users.fetch(worship.UserID)) === "object") ? client.getTag(await client.users.fetch(worship.UserID)) : 'Unknown user'}`,
                             value: `**ID:** ${worship.Id}\n**Worship:** ${worship.Worship}\n**Guild:** ${worship.Guild}`
                         }))
                     ),

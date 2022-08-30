@@ -27,23 +27,13 @@ export default {
             await interaction.editReply({content: `Your answer can't be more than 300 characters long`})
             return;
         }
-
         client.db.all(`SELECT * FROM Worshipers WHERE Id = ${worshipId}`, async (err, row) => {
-            if(!row){
-                await interaction.editReply({content: `A worship for this ID doesn\'t exist.`})
-                return;
-            }
+            if(!row) return await interaction.editReply({content: `A worship for this ID doesn\'t exist.`});
+            const user = await client.users.cache.find(user => user.id === row[0].UserID);
+            if(typeof user !== "object") return await interaction.editReply({content: 'This user couldn\'t be found, so your reply was not sent'});
+            await user.send({content: `**Jamie replied to your worship with:**\n${replyContent}`}).catch(async () => await interaction.editReply({content: `This user's DMS are disabled, your reply was not sent`}));
+            await interaction.editReply({content: `Your reply was sent to ${user}`});
 
-            try{
-                const user = await client.users.cache.find(user => user.id === row[0].UserID)
-
-                if(typeof user !== "object") return await interaction.editReply({content: 'This user couldn\'t be found, so your reply was not sent'})
-
-                await user.send({content: `**Jamie replied to your worship with:**\n${replyContent}`})
-                await interaction.editReply({content: `Your reply was sent to ${user}`})
-            }catch{
-                await interaction.editReply({content: `This user's DMS are disabled, your reply was not sent`})
-            }
         })
     }
 }

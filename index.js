@@ -3,15 +3,15 @@ import * as fs from 'node:fs';
 (await import('dotenv')).config();
 (await import('@memw/betterconsole')).load();
 
-const client = new Client({intents: 3276799, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}})
+const client = new Client({intents: 3276799, partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}});
 
-client.login(process.env.TOKEN)
+await client.login(process.env.TOKEN);
 
 for (const file of fs.readdirSync('./functions').filter(file => file.endsWith(".js"))){
     client[file.slice(0, -3)] = (await import(`./functions/${file}`)).default;
 }
 
-client.commands = new Collection()
+client.commands = new Collection();
 for(const file of fs.readdirSync('./commands')){
     const command = (await import(`./commands/${file}`)).default;
     client.commands.set(command.data.name, command);
