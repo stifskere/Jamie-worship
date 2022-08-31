@@ -3,7 +3,8 @@ import { ContextMenuCommandBuilder, ApplicationCommandType } from "discord.js";
 export default {
     data: new ContextMenuCommandBuilder()
         .setName('Black list')
-        .setType(ApplicationCommandType.User),
+        .setType(ApplicationCommandType.User)
+        .setDMPermission(false),
 
     async execute(interaction, client){
         if(!client.worshipModerators.includes(interaction.user.id)){

@@ -4,6 +4,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName('worships')
         .setDescription('Check other\'s worships')
+        .setDMPermission(false)
         .addStringOption(order => order
             .setName('order')
             .setDescription('In what order the worships should be displayed')

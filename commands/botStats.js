@@ -5,7 +5,10 @@ export default {
     data: new SlashCommandBuilder()
         .setName("bot")
         .setDescription("Bot status command group")
-        .addSubcommand(s => s.setName("stats").setDescription("View the actual bot status.")),
+        .setDMPermission(false)
+        .addSubcommand(s => s
+            .setName("stats")
+            .setDescription("View the actual bot status.")),
 
     async execute (interaction, client) {
         let usedCommandsString = "  Command Name  |  Count\n--------------------------\n";

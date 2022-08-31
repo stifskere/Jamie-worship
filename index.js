@@ -21,4 +21,4 @@ fs.readdirSync('./events').filter(file => file.endsWith('.js')).forEach(file => 
     client.on(file.slice(0, -3), async (...args) => (await import(`./events/${file}`)).default(client, ...args));
 });
 
-//process.on('uncaughtException', error => console.error(error));
+process.on('uncaughtException', error => console.error(false, error));

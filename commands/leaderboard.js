@@ -3,7 +3,8 @@ import {EmbedBuilder, SlashCommandBuilder} from "discord.js";
 export default {
     data: new SlashCommandBuilder()
         .setName("leaderboard")
-        .setDescription("Leaderboard of worships by user"),
+        .setDescription("Leaderboard of worships by user")
+        .setDMPermission(false),
 
     async execute(interaction, client){
         client.db.all("SELECT * FROM Worshipers", async (err, rows) => {

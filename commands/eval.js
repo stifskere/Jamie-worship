@@ -5,6 +5,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName('eval')
         .setDescription('Evaluates a javascript expression')
+        .setDMPermission(false)
         .addStringOption(expression => expression
             .setName('expression')
             .setDescription('The evaluated expression')

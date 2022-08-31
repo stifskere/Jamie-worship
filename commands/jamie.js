@@ -4,6 +4,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName('jamie')
         .setDescription('Gives Jamie info')
+        .setDMPermission(false)
         .addSubcommand(profile => profile
             .setName('profile')
             .setDescription('Shows Jamie info or something'))

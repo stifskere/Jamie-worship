@@ -4,6 +4,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName('send')
         .setDescription('send')
+        .setDMPermission(false)
         .addSubcommand(desc => desc
             .setName('gif')
             .setDescription('gif')),

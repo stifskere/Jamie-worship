@@ -5,6 +5,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName('worship')
         .setDescription('worship Jamie')
+        .setDMPermission(false)
         .addStringOption(worship => worship
             .setName('worship')
             .setDescription('The text you want to say to our god')
