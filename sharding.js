@@ -1,5 +1,4 @@
 import { ShardingManager } from "discord.js";
-(await import("@memw/betterconsole")).load();
 (await import("dotenv")).config();
 
 const manager = new ShardingManager('./index.js', {
