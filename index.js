@@ -10,14 +10,14 @@ for (const file of fs.readdirSync('./functions').filter(file => file.endsWith(".
     client[file.slice(0, -3)] = (await import(`./functions/${file}`)).default;
 }
 
+fs.readdirSync('./events').filter(file => file.endsWith('.js')).forEach(file => {
+    client.on(file.slice(0, -3), async (...args) => (await import(`./events/${file}`)).default(client, ...args));
+});
+
 client.commands = new Collection();
 for(const file of fs.readdirSync('./commands')){
     const command = (await import(`./commands/${file}`)).default;
     client.commands.set(command.data.name, command);
 }
-
-fs.readdirSync('./events').filter(file => file.endsWith('.js')).forEach(file => {
-    client.on(file.slice(0, -3), async (...args) => (await import(`./events/${file}`)).default(client, ...args));
-});
 
 process.on('uncaughtException', error => console.error(false, error));
