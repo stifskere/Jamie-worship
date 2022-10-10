@@ -1,7 +1,6 @@
 import {Client, Collection, Partials} from 'discord.js';
 import * as fs from 'node:fs';
 (await import('dotenv')).config();
-(await import('@memw/betterconsole')).load({logRoute: "./logs/LogHistory.log", keepLogs: true});
 
 const client = new Client({intents: 3276799, partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User], restRequestTimeout: 500000, ws: {properties: { $browser: "Discord iOS"}}});
 

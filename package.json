@@ -22,7 +22,6 @@
   "homepage": "https://github.com/stifskere/Jamie-worship#readme",
   "dependencies": {
     "@discordjs/rest": "^0.4.1",
-    "@memw/betterconsole": "^1.7.10",
     "axios": "^0.27.2",
     "colors": "^1.4.0",
     "discord-api-types": "^0.33.0",
