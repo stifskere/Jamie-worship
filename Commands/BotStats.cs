@@ -9,10 +9,10 @@ using static JamieWorshiper.Handlers.BotStatsHandler;
 
 namespace JamieWorshiper.Commands;
 
-[Group("bot", "Bot stats command group")]
+[Group("bot", "Bot stats related command group.")]
 public class BotStats : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("stats", "View the actual bot status since start-up"), UsedImplicitly]
+    [SlashCommand("stats", "View the actual bot status since start-up."), UsedImplicitly]
     public async Task BotStatsAsync()
     {
         string usedCommandsString = "  Command Name  |  Count\n--------------------------\n";
@@ -48,7 +48,7 @@ public class BotStats : InteractionModuleBase<SocketInteractionContext>
             .WithDescription("This shows the current bot stats since the last bot restart.")
             .WithFields(
                 new EmbedFieldBuilder().WithName("🔹 General stats").WithValue($"**Current up time:** {parsedTimeString}\n**Worships sent:** {WorshipsNum}\n**Total commands used:** {CommandCount}"),
-                new EmbedFieldBuilder().WithName("🔹 detailed command usage").WithValue($"```\n{usedCommandsString}```"),
+                new EmbedFieldBuilder().WithName("🔹 Detailed command usage").WithValue($"```\n{usedCommandsString}```"),
                 new EmbedFieldBuilder().WithName("🔹 GitHub status").WithValue($"**Commits:** {commits.Length}\n**Last commit name:** {commits[0].commit.message}\n**Last commit author:** {commits[0].commit.author.name}\n**Last commit content:** [click to view changes]({commits[0].html_url})")
                 )
             .WithColor(RandomColor())

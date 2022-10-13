@@ -10,9 +10,11 @@ public static class MessageReceived
     [Event(EventTypes.MessageReceived), UsedImplicitly]
     public static async Task MessageReceivedEvent(SocketMessage message)
     {
+        if (message.Author.IsBot) return;
+
         IGuild messageGuild = Client.Guilds.First(m => m.Channels.Any(c => c.Id == message.Channel.Id));
         
-        if (message.Author.Id == Config.Jamie.Id)
+        if (message.Author.Id == Config.Jamie.Id && !string.IsNullOrEmpty(message.Content))
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithTitle("Jamie said something")

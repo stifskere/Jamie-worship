@@ -15,7 +15,6 @@ public static class BotStatsHandler
     {
         if (CommandUsage.ContainsKey(command.CommandName)) CommandUsage[command.CommandName]++;
         else CommandUsage.Add(command.CommandName, 1);
-        if (command.CommandName == "worship") WorshipsNum++;
         CommandCount++;
         return Task.CompletedTask;
     }
