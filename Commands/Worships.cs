@@ -97,7 +97,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             EmbedBuilder sentWorshipEmbed = new EmbedBuilder()
                 .WithTitle(phrases[new Random().Next(0, phrases.Length - 1)])
                 .AddField("They said", worship)
-                .WithFooter($"The id of this worship is {(int)worshipCount[0] + 1}");
+                .WithFooter($"The id of this worship is {(long)worshipCount[0] + 1}");
             
             await Config.Jamie.SendMessageAsync(embed: sentWorshipEmbed.Build());
             
@@ -112,8 +112,10 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             
             await RespondAsync(embed: worshipEmbed.Build());
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine(ex);
+            
             EmbedBuilder failedEmbed = new EmbedBuilder()
                 .WithTitle("Worship failed to send")
                 .WithDescription("Your worship failed because one of the following reasons\n- Jamie blocked the bot\n- Memw is a dumb ass and can't code properly")
