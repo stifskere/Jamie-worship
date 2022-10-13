@@ -40,10 +40,24 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
         HttpClient requestClient = new HttpClient();
         using MemoryStream image = new MemoryStream(await requestClient.GetByteArrayAsync("https://cdn.memw.es/helloJamie.gif"));
         await RespondWithFileAsync(image, "jamie.gif");
-        if (send) try 
+        if (send)
+            try
             {
-               await Config.Jamie.SendFileAsync(image, "jamie.gif");
+                List<List<object>> blackList =
+                    DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
+                if (blackList.Count > 0)
+                {
+                    await RespondAsync("🙅 You are in the blacklist, you cannot send anything to jamie. 🚫",
+                        ephemeral: true);
+                    return;
+                }
+
+                await Config.Jamie.SendFileAsync(image, "jamie.gif");
+                await FollowupAsync("The gif was sent to jamie", ephemeral: true);
             }
-            catch {/* ignored */}
+            catch
+            {
+                await FollowupAsync("An error occurred, the gif was not sent, maybe jamie blocked the bot, but you can still enjoy your gif without sending it.", ephemeral: true);
+            }
     }
 }

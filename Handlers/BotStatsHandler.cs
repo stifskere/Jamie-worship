@@ -13,8 +13,9 @@ public static class BotStatsHandler
     [Event(EventTypes.SlashCommandExecuted), UsedImplicitly]
     public static Task SlashCommandExecutedEvent(SocketSlashCommand command)
     {
-        if (CommandUsage.ContainsKey(command.CommandName)) CommandUsage[command.CommandName]++;
-        else CommandUsage.Add(command.CommandName, 1);
+        string dictName = $"{command.CommandName} {command.Data.Options.First().Name}";
+        if (CommandUsage.ContainsKey(dictName)) CommandUsage[dictName]++;
+        else CommandUsage.Add(dictName, 1);
         CommandCount++;
         return Task.CompletedTask;
     }

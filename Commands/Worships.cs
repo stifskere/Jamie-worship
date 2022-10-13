@@ -81,7 +81,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         List<List<object>> blackList = DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
         if (blackList.Count > 0)
         {
-            await RespondAsync("You are in the blacklist, you cannot worship jamie.", ephemeral: true);
+            await RespondAsync("🚫 You are in the blacklist, you cannot worship jamie. 🙅", ephemeral: true);
             return;
         }
 
@@ -101,7 +101,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             
             await Config.Jamie.SendMessageAsync(embed: sentWorshipEmbed.Build());
             
-            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild) VALUES({Context.User.Id}, '{worship}', '{Context.Guild.Name}')");
+            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, '{worship.Replace("'", "''")}', '{Context.Guild.Name.Replace("'", "''")}', null)");
             BotStatsHandler.WorshipsNum++;
             
             EmbedBuilder worshipEmbed = new EmbedBuilder()
@@ -115,6 +115,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+            Console.WriteLine(worship);
             
             EmbedBuilder failedEmbed = new EmbedBuilder()
                 .WithTitle("Worship failed to send")
@@ -131,11 +132,11 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
     {
         if (Context.User.Id != Config.Jamie.Id)
         {
-            await RespondAsync("Only Jamie can reply to worships, 👀 you don't look like Jamie!?", ephemeral: true);
+            await RespondAsync("🚫 Only Jamie can reply to worships, 👀 you don't look like Jamie!?", ephemeral: true);
             return;
         }
 
-        List<List<object>> worship = DataBase.RunSqliteCommandAllRows($"SELECT UserId, Worship, Guild, Id FROM Worships WHERE Id = {id}");
+        List<object> worship = DataBase.RunSqliteCommandFirstRow($"SELECT UserId, Worship, Guild, Id FROM Worships WHERE Id = {id}");
 
         if (worship.Count == 0)
         {
@@ -145,8 +146,15 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            IUser user = await Client.GetUserAsync((ulong)(long)worship[0][3]);
-            await user.SendMessageAsync($"**Jamie replied to your worship with:**\n{reply}");
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithTitle("Jamie replied to your worship")
+                .WithDescription($"**He said:** {reply}")
+                .AddField("Worship info", $"**ID:** {id}\n**Content:** {worship[1]}")
+                .WithColor(RandomColor())
+                .WithCurrentTimestamp();
+            
+            IUser user = await Client.GetUserAsync((ulong)(long)worship[0]);
+            await user.SendMessageAsync(embed: embed.Build());
             await RespondAsync($"Your reply was sent to `{user}`", ephemeral: true);
         }
         catch
