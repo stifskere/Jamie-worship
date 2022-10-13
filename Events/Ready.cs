@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Discord;
 using Discord.Interactions;
 using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
@@ -19,8 +20,10 @@ public static class Ready
         await commands.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
         await commands.RegisterCommandsGloballyAsync();
         new Thread(CreateDatabasesThread).Start();
+        await Client.SetActivityAsync(new Game("The jamie worship game but in beta"));
         //For pterodactyl, y'all can remove, i won't.
         Console.WriteLine("Started");
+        
     }
 
     private static void CreateDatabasesThread() =>
