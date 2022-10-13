@@ -4,7 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Handlers;
+namespace JamieWorshipper.Handlers;
 
 public class CustomClient : DiscordSocketClient
 {

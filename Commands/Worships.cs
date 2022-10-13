@@ -1,10 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 using Discord;
 using Discord.Interactions;
-using JamieWorshiper.Handlers;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Commands;
+namespace JamieWorshipper.Commands;
 
 [Group("worships", "Worships related command group.")]
 public class Worships : InteractionModuleBase<SocketInteractionContext>

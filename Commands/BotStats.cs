@@ -5,9 +5,9 @@ using Discord.Interactions;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static JamieWorshiper.Handlers.BotStatsHandler;
+using static JamieWorshipper.Handlers.BotStatsHandler;
 
-namespace JamieWorshiper.Commands;
+namespace JamieWorshipper.Commands;
 
 [Group("bot", "Bot stats related command group.")]
 public class BotStats : InteractionModuleBase<SocketInteractionContext>

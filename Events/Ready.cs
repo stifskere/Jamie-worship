@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Discord.Interactions;
-using JamieWorshiper.Handlers;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Events;
+namespace JamieWorshipper.Events;
 
 public static class Ready
 {
@@ -26,7 +26,7 @@ public static class Ready
     private static void CreateDatabasesThread() =>
         DataBase.RunSqliteCommandAllRows(@"
             CREATE TABLE IF NOT EXISTS Worshippers(Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER NOT NULL, Worship VARCHAR NOT NULL, Guild VARCHAR NOT NULL, unique(Id));
-            CREATE TABLE IF NOT EXISTS JamieInfo(InfoKey VARCHAR NOT NULL PRIMARY KEY, InfoValue VARCHAR NOT NULL, unique(Key));
+            CREATE TABLE IF NOT EXISTS JamieInfo(InfoKey VARCHAR NOT NULL PRIMARY KEY, InfoValue VARCHAR NOT NULL, unique(InfoKey));
             CREATE TABLE IF NOT EXISTS BlackListedUsers(Id INTEGER PRIMARY KEY NOT NULL, unique(Id));
             CREATE TABLE IF NOT EXISTS BotConfig(ConfigKey VARCHAR NOT NULL PRIMARY KEY, ConfigValue VARCHAR NOT NULL, unique(ConfigKey));
             INSERT OR IGNORE INTO JamieInfo(InfoKey, InfoValue) VALUES('MessageNum', '0'), ('LastMessage', 'Any ""last message"" sent yet');

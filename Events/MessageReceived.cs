@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using JamieWorshiper.Handlers;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Events;
+namespace JamieWorshipper.Events;
 
 public static class MessageReceived
 {

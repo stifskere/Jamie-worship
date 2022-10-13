@@ -1,7 +1,7 @@
 ﻿using System.Data.SQLite;
 using System.Text.RegularExpressions;
 
-namespace JamieWorshiper.Handlers;
+namespace JamieWorshipper.Handlers;
 
 public class DatabaseHandler
 {

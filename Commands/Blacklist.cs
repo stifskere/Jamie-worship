@@ -2,7 +2,7 @@
 using Discord.Interactions;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Commands;
+namespace JamieWorshipper.Commands;
 
 [UsedImplicitly]
 public class Blacklist : InteractionModuleBase<SocketInteractionContext>

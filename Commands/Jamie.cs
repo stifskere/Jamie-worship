@@ -2,7 +2,7 @@
 using Discord.Interactions;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Commands;
+namespace JamieWorshipper.Commands;
 
 [Group("jamie", "Jamie related commands group.")]
 public class Jamie : InteractionModuleBase<SocketInteractionContext>

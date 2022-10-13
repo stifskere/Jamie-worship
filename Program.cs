@@ -1,12 +1,11 @@
-﻿global using static JamieWorshiper.Program;
-global using static JamieWorshiper.CustomMethods;
-
+﻿global using static JamieWorshipper.Program;
+global using static JamieWorshipper.CustomMethods;
 using Discord;
 using Discord.WebSocket;
-using JamieWorshiper.Handlers;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper;
+namespace JamieWorshipper;
 
 public static class Program
 {

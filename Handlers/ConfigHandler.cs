@@ -1,8 +1,8 @@
-﻿using Discord;
-using System.Reflection;
+﻿using System.Reflection;
+using Discord;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Handlers;
+namespace JamieWorshipper.Handlers;
 
 public class ConfigHandler
 {

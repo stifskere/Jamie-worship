@@ -1,7 +1,7 @@
 ﻿using Discord.WebSocket;
 using JetBrains.Annotations;
 
-namespace JamieWorshiper.Handlers;
+namespace JamieWorshipper.Handlers;
 
 public static class BotStatsHandler
 {

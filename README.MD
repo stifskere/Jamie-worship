@@ -1,4 +1,4 @@
-﻿# Jamie worshiper
+﻿# Jamie worshipper
 
 This bot was created with the sole purpose of worshipping jamie.
 
