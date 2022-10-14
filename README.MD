@@ -21,7 +21,7 @@ The bot also requires a .env file to be created in the compiled folder with the 
 |------------|--------------------------------------------------------------------------|
 | MODERATORS | All the bot moderators discord ID's separated with commas without spaces |
 | TOKEN      | Your discord bot token                                                   |
-| GITCREDS   | Your GitHub credentials for the bot status command                       |
+| GITCREDS   | Your GitHub credentials for the bot status command, format: user:token   |
 
 ### Releases
 
