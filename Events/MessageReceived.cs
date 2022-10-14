@@ -12,7 +12,7 @@ public static class MessageReceived
     {
         if (message.Author.IsBot) return;
 
-        IGuild messageGuild = Client.Guilds.First(m => m.Channels.Any(c => c.Id == message.Channel.Id));
+        IGuild messageGuild = Client.GetGuild(message.Channel.Id);
         
         if (message.Author.Id == Config.Jamie.Id && !string.IsNullOrEmpty(message.Content))
         {
