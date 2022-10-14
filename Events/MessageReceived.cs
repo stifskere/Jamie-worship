@@ -26,10 +26,10 @@ public static class MessageReceived
 
             await Config.MessagesChannel.SendMessageAsync(embed: embed.Build(), components: components.Build());
             
-            DataBase.RunSqliteCommandAllRows(@$"
+            DataBase.RunSqliteCommandAllRows(@"
             UPDATE JamieInfo SET InfoValue = CAST((SELECT CAST(InfoValue AS INTEGER) FROM JamieInfo WHERE InfoKey = 'MessageNum') + 1 AS TEXT) WHERE InfoKey = 'MessageNum';
-            UPDATE JamieInfo SET InfoValue = '{message.Content.Replace("`", "")}' WHERE InfoKey = 'LastMessage';
-            ");
+            UPDATE JamieInfo SET InfoValue = @0 WHERE InfoKey = 'LastMessage';
+            ", message.Content);
         }
 
         if (message.Content.ToLower().Contains("jamie") && messageGuild.Id == Config.MainGuild.Id)
