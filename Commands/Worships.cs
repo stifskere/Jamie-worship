@@ -102,12 +102,12 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             
             EmbedBuilder sentWorshipEmbed = new EmbedBuilder()
                 .WithTitle(phrases[new Random().Next(0, phrases.Length - 1)])
-                .AddField("They said", worship)
+                .AddField($"{Context.User} said", worship)
                 .WithFooter($"The id of this worship is {(long)worshipCount[0] + 1}");
             
             await Config.Jamie.SendMessageAsync(embed: sentWorshipEmbed.Build());
             
-            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, '{DatabaseHandler.ParseInput(worship)}', '{(Context.Interaction.IsDMInteraction ? "Private messages" : DatabaseHandler.ParseInput(Context.Guild.Name))}', null)");
+            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, @0, @1, null)", DatabaseHandler.ParseInput(worship), Context.Interaction.IsDMInteraction ? "Private messages" : DatabaseHandler.ParseInput(Context.Guild.Name));
             BotStatsHandler.WorshipsNum++;
             
             EmbedBuilder worshipEmbed = new EmbedBuilder()

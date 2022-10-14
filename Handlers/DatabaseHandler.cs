@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System.Data;
+using System.Data.SQLite;
 using System.Text.RegularExpressions;
 
 namespace JamieWorshipper.Handlers;
@@ -18,9 +19,14 @@ public class DatabaseHandler
     
     ~DatabaseHandler() => _con.Dispose();
 
-    public List<List<object>> RunSqliteCommandAllRows(string command)
+    public List<List<object>> RunSqliteCommandAllRows(string command, params string[] parameters)
     {
         SQLiteCommand cmd = new SQLiteCommand(command, _con);
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            cmd.Parameters.Add($"@{i}", DbType.String);
+            cmd.Parameters[$"@{i}"].Value = parameters[i];
+        }
         List<List<object>> returnList = new();
         SQLiteDataReader reader = cmd.ExecuteReader();
         if(reader.HasRows) while (reader.Read())
@@ -32,8 +38,8 @@ public class DatabaseHandler
         return returnList;
     }
 
-    public List<object> RunSqliteCommandFirstRow(string command) {
-        List<List<object>> data = RunSqliteCommandAllRows(command);
+    public List<object> RunSqliteCommandFirstRow(string command, params string[] parameters) {
+        List<List<object>> data = RunSqliteCommandAllRows(command, parameters);
         return data.Count == 0 ? new List<object>() : data[0];
     }
 
