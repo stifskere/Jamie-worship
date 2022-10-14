@@ -78,6 +78,12 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("do", "Worship Jamie!"), UsedImplicitly]
     public async Task DoAsync([Summary("Worship", "The worship paragraph"), MaxLength(300)]string worship)
     {
+        if (Context.User.Id == Config.Jamie.Id)
+        {
+            await RespondAsync("🚫 I know you are worthy but you can't worship yourself. 🚫", ephemeral: true);
+            return;
+        }
+        
         List<List<object>> blackList = DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
         if (blackList.Count > 0)
         {
@@ -101,7 +107,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             
             await Config.Jamie.SendMessageAsync(embed: sentWorshipEmbed.Build());
             
-            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, '{worship.Replace("'", "''")}', '{Context.Guild.Name.Replace("'", "''")}', null)");
+            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, '{DatabaseHandler.ParseInput(worship)}', '{(Context.Interaction.IsDMInteraction ? "Private messages" : DatabaseHandler.ParseInput(Context.Guild.Name))}', null)");
             BotStatsHandler.WorshipsNum++;
             
             EmbedBuilder worshipEmbed = new EmbedBuilder()
@@ -112,11 +118,8 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             
             await RespondAsync(embed: worshipEmbed.Build());
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine(ex);
-            Console.WriteLine(worship);
-            
             EmbedBuilder failedEmbed = new EmbedBuilder()
                 .WithTitle("Worship failed to send")
                 .WithDescription("Your worship failed because one of the following reasons\n- Jamie blocked the bot\n- Memw is a dumb ass and can't code properly")
@@ -166,7 +169,6 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("leaderboard", "Check the users who most worshipped jamie."), UsedImplicitly]
     public async Task LeaderBoardAsync()
     {
-        //bruh this ain't a mess but i lazy.
         List<List<object>> worships = DataBase.RunSqliteCommandAllRows("SELECT UserId FROM Worships");
         Dictionary<ulong, int> worshipsCount = new();
         foreach (var user in worships)

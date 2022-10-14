@@ -21,7 +21,6 @@ public class DatabaseHandler
     public List<List<object>> RunSqliteCommandAllRows(string command)
     {
         SQLiteCommand cmd = new SQLiteCommand(command, _con);
-        cmd.ExecuteNonQuery();
         List<List<object>> returnList = new();
         SQLiteDataReader reader = cmd.ExecuteReader();
         if(reader.HasRows) while (reader.Read())
@@ -37,4 +36,6 @@ public class DatabaseHandler
         List<List<object>> data = RunSqliteCommandAllRows(command);
         return data.Count == 0 ? new List<object>() : data[0];
     }
+
+    public static string ParseInput(string input) => input.Replace(@"\", "\\").Replace("'", "\'");
 }

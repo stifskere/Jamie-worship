@@ -26,13 +26,19 @@ public static class Ready
         
     }
 
-    private static void CreateDatabasesThread() =>
+    private static void CreateDatabasesThread()
+    {
         DataBase.RunSqliteCommandAllRows(@"
             CREATE TABLE IF NOT EXISTS Worshippers(Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER NOT NULL, Worship VARCHAR NOT NULL, Guild VARCHAR NOT NULL, unique(Id));
             CREATE TABLE IF NOT EXISTS JamieInfo(InfoKey VARCHAR NOT NULL PRIMARY KEY, InfoValue VARCHAR NOT NULL, unique(InfoKey));
             CREATE TABLE IF NOT EXISTS BlackListedUsers(Id INTEGER PRIMARY KEY NOT NULL, unique(Id));
             CREATE TABLE IF NOT EXISTS BotConfig(ConfigKey VARCHAR NOT NULL PRIMARY KEY, ConfigValue VARCHAR NOT NULL, unique(ConfigKey));
+            ");
+
+        DataBase.RunSqliteCommandAllRows(@"
             INSERT OR IGNORE INTO JamieInfo(InfoKey, InfoValue) VALUES('MessageNum', '0'), ('LastMessage', 'Any ""last message"" sent yet');
             INSERT OR IGNORE INTO BotConfig(ConfigKey, ConfigValue) VALUES('MessagesChannel', '976832701015420998'), ('MainGuild', '976149800447770624'), ('JamieId', '394127601398054912');
             ");
+    }
+        
 }
