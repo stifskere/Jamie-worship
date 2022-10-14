@@ -166,6 +166,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("leaderboard", "Check the users who most worshipped jamie."), UsedImplicitly]
     public async Task LeaderBoardAsync()
     {
+        //bruh this ain't a mess but i lazy.
         List<List<object>> worships = DataBase.RunSqliteCommandAllRows("SELECT UserId FROM Worships");
         Dictionary<ulong, int> worshipsCount = new();
         foreach (var user in worships)
@@ -173,11 +174,12 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             else worshipsCount.Add((ulong)(long)user[0], 1);
         Dictionary<ulong, int> topFive = worshipsCount.OrderByDescending(w => w.Value)
             .Take(5).ToDictionary(v => v.Key, v => v.Value);
-        int thisUserPos = worships.FindIndex(w => w.Contains(Context.User.Id));
+        List<KeyValuePair<ulong, int>> thisUserOrdered = worshipsCount.OrderByDescending(w => w.Value).CreateOrderedEnumerable(w => w.Value, null, true).ToList();
+        int thisUserPos = thisUserOrdered.FindIndex(w => w.Key == Context.User.Id);
         EmbedBuilder embed = new EmbedBuilder()
             .WithTitle("🏆 Leaderboard 🏆")
             .WithDescription("🙏 these are the top 5 worshipers who worshiped the most 🙏")
-            .WithFooter(thisUserPos != -1 ? $"You are {(thisUserPos < 3 ? $"{thisUserPos}st" : $"{thisUserPos}th")} in a descending list of all the worshippers." : "You don't have any worship yet, use \"/worships do\" to worship jamie")
+            .WithFooter(thisUserPos != -1 ? $"You are {(thisUserPos < 3 ? $"{thisUserPos}st" : $"{thisUserPos}th")} with {thisUserOrdered.First(u => u.Key == Context.User.Id).Value} worships in a descending list of all the worshippers." : "You don't have any worship yet, use \"/worships do\" to worship jamie")
             .WithColor(RandomColor())
             .WithFields(topFive.Select(async (w, i) => new EmbedFieldBuilder().WithName($"{(i+1 < 3 ? $"{i+1}st." : $"{i+1}th.")} {await Client.GetUserAsync(w.Key)}").WithValue($"**With:** {w.Value} worships")).Select(t => t.Result));
         await RespondAsync(embed: embed.Build());
