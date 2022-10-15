@@ -8,12 +8,18 @@ namespace JamieWorshipper.Events;
 public static class MessageReceived
 {
     [Event(EventTypes.MessageReceived), UsedImplicitly]
-    public static async Task MessageReceivedEvent(SocketMessage message)
+    public static Task MessageReceivedEvent(SocketMessage message)
+    {
+        new Thread(() => MessageReceivedTask(message)).Start();
+        return Task.CompletedTask;
+    }
+
+    public static async void MessageReceivedTask(SocketMessage message)
     {
         if (message.Author.IsBot) return;
 
         IGuild messageGuild = Client.Guilds.First(m => m.Channels.Any(c => c.Id == message.Channel.Id));
-        
+
         if (message.Author.Id == Config.Jamie.Id && !string.IsNullOrEmpty(message.Content))
         {
             EmbedBuilder embed = new EmbedBuilder()
@@ -22,10 +28,10 @@ public static class MessageReceived
                 .WithFooter("I'l keep whatever our god says in here");
 
             ComponentBuilder components = new ComponentBuilder()
-                .WithButton(new ButtonBuilder{Label = "Go to message", Style = ButtonStyle.Link, Url = message.GetJumpUrl()});
+                .WithButton(new ButtonBuilder { Label = "Go to message", Style = ButtonStyle.Link, Url = message.GetJumpUrl() });
 
             await Config.MessagesChannel.SendMessageAsync(embed: embed.Build(), components: components.Build());
-            
+
             DataBase.RunSqliteCommandAllRows(@"
             UPDATE JamieInfo SET InfoValue = CAST((SELECT CAST(InfoValue AS INTEGER) FROM JamieInfo WHERE InfoKey = 'MessageNum') + 1 AS TEXT) WHERE InfoKey = 'MessageNum';
             UPDATE JamieInfo SET InfoValue = @0 WHERE InfoKey = 'LastMessage';
