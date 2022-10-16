@@ -1,8 +1,12 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using Discord;
+using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using JetBrains.Annotations;
+using PreconditionAttribute = Discord.Interactions.PreconditionAttribute;
+using PreconditionResult = Discord.Interactions.PreconditionResult;
 
 namespace JamieWorshipper.Handlers;
 
@@ -59,6 +63,14 @@ public struct CustomClientConfig
     public string EnvPath { get; init; } = "";
     public Assembly Assembly { get; init; } = Assembly.GetExecutingAssembly();
     public CustomClientConfig(){}
+}
+
+public class CommandCooldownAttribute : PreconditionAttribute
+{
+    public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
+    {
+        return Task.FromResult(PreconditionResult.FromError(""));
+    }
 }
 
 [AttributeUsage(AttributeTargets.Method)]
