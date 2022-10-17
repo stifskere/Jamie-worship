@@ -109,8 +109,10 @@ public class CommandCooldownAttribute : PreconditionAttribute
                 
                 async void CoolDownMessageThread()
                 {
+                    long time = commandValue.Timestamp.ToUnixTimeMilliseconds() - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    if (time < 1000) time += 1000;
                     await context.Interaction.RespondAsync($"This command is in cooldown, you will be able to use it <t:{commandValue.Timestamp.ToUnixTimeSeconds()}:R>", ephemeral: true);
-                    await Task.Delay((int)(commandValue.Timestamp.ToUnixTimeMilliseconds() - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()));
+                    await Task.Delay((int)time);
                     await context.Interaction.ModifyOriginalResponseAsync(m => m.Content = "You are now able to use the command again.");
                 }
                 
