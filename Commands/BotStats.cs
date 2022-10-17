@@ -29,7 +29,7 @@ public class BotStats : InteractionModuleBase<SocketInteractionContext>
         else usedCommandsString = "No commands used yet.";
 
         long seconds = DateTimeOffset.Now.ToUnixTimeSeconds() - Uptime.ToUnixTimeSeconds(), minutes = seconds / 60, hours = minutes / 60, days = hours / 24,
-            fSeconds = (long)Math.Floor((decimal)seconds) % 60, fMinutes = (long)Math.Floor((decimal)minutes) % 60, fHours = (long)Math.Floor((decimal)hours), fDays = (long)Math.Floor((decimal)days);
+            fSeconds = (long)Math.Floor((decimal)seconds) % 60, fMinutes = (long)Math.Floor((decimal)minutes) % 60, fHours = (long)Math.Floor((decimal)hours) % 60, fDays = (long)Math.Floor((decimal)days) % 24;
         string parsedTimeString = $"{(fDays != 0 ? $"{(fDays < 10 ? $"0{fDays}" : fDays)} day{(fDays == 1 ? "" : "s")}" : "")} {(fHours != 0 ? $"{(fHours < 10 ? $"0{fHours}" : fHours)} hour{(fHours == 1 ? "" : "s")}" : "")} {(fMinutes != 0 ? $"{(fMinutes < 10 ? $"0{fMinutes}" : fMinutes)} minute{(fMinutes == 1 ? "" : "s")}" : "")} {(fSeconds != 0 ? $"{(fSeconds < 10 ? $"0{fSeconds}" : fSeconds)} second{(fSeconds == 1 ? "" : "s")}" : "")}";
 
         dynamic[] commits = Array.Empty<dynamic>();
