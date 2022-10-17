@@ -6,14 +6,14 @@ namespace JamieWorshipper.Handlers;
 
 public class ConfigHandler
 {
-    public ITextChannel MessagesChannel { get; internal set; } = null!;
-    public IGuild MainGuild { get; internal set; } = null!;
-    public IUser Jamie { get; internal set; } = null!;
-    public ulong[] Moderators { get; internal set; } = Array.Empty<ulong>();
+    public ITextChannel MessagesChannel { get; private set; } = null!;
+    public IGuild MainGuild { get; private set; } = null!;
+    public IUser Jamie { get; private set; } = null!;
+    public ulong[] Moderators { get; private set; } = Array.Empty<ulong>();
 
-    [UsedImplicitly] private ulong _privateMessagesChannel;
-    [UsedImplicitly] private ulong _privateMainGuild;
-    [UsedImplicitly] private ulong _privateJamieId;
+    [UsedImplicitly] private ulong _privateMessagesChannel = 1;
+    [UsedImplicitly] private ulong _privateMainGuild = 1;
+    [UsedImplicitly] private ulong _privateJamieId = 1;
     
     public ConfigHandler() => new Thread(ReloadConfig).Start();
 

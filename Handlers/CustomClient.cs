@@ -76,7 +76,8 @@ public class CommandCooldownAttribute : PreconditionAttribute
     
     public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
     {
-        string cName = $"{(context.Interaction.Data as SocketSlashCommandData)!.Name} {string.Join(" ", (context.Interaction.Data as SocketSlashCommandData)!.Options.Select(option => option.Name))}";
+        SocketSlashCommandData cmd = (context.Interaction.Data as SocketSlashCommandData)!;
+        string cName = $"{cmd.Name} {string.Join(" ", cmd.Options.Select(option => option.Name))}";
 
         if (!CooldownList.ContainsKey(context.User.Id))
         {
@@ -109,8 +110,11 @@ public class CommandCooldownAttribute : PreconditionAttribute
                 CooldownList[context.User.Id].RemoveAll(c => c.Name == cName);
             else
             {
-                BotStatsHandler.CommandCount--;
-                BotStatsHandler.CommandUsage[cName]--;
+                if (BotStatsHandler.CommandUsage.ContainsKey(cName))
+                {
+                    BotStatsHandler.CommandCount--;
+                    BotStatsHandler.CommandUsage[cName]--;
+                }
                 
                 async void CoolDownMessageThread()
                 {
