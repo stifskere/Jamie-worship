@@ -44,10 +44,15 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
 
         if (!File.Exists("./JamieGif.gif"))
         {
-            using MemoryStream image = new MemoryStream();
-            image.Write(await new HttpClient().GetByteArrayAsync("https://cdn.memw.es/helloJamie.gif"));
-            FileStream file = File.Create("./JamieGif.gif");
-            image.WriteTo(file);
+            async void CreateFileTask()
+            {
+                using MemoryStream image = new MemoryStream();
+                image.Write(await new HttpClient().GetByteArrayAsync("https://cdn.memw.es/helloJamie.gif"));
+                FileStream file = File.Create("./JamieGif.gif");
+                image.WriteTo(file);
+            }
+
+            new Task(CreateFileTask).Start();
         }
 
         await Context.Channel.SendFileAsync(filePath: "./JamieGif.gif");
