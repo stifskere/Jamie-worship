@@ -9,7 +9,7 @@ namespace JamieWorshipper.Commands;
 [Group("worships", "Worships related command group.")]
 public class Worships : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("view", "View all of the worships sent to jamie."), UsedImplicitly]
+    [SlashCommand("view", "View all of the worships sent to jamie."), CommandCooldown(60), UsedImplicitly]
     public async Task ViewAsync([Summary("Order", "The order which the worships will be displayed"), Choice("Ascending", "ASC"), Choice("Descending", "DESC")]string order = "ASC")
     {
         ButtonBuilder backButton = new ButtonBuilder()
@@ -75,7 +75,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         };
     }
 
-    [SlashCommand("do", "Worship Jamie!"), UsedImplicitly]
+    [SlashCommand("do", "Worship Jamie!"), CommandCooldown(30), UsedImplicitly]
     public async Task DoAsync([Summary("Worship", "The worship paragraph"), MaxLength(300)]string worship)
     {
         if (Context.User.Id == Config.Jamie.Id)
@@ -166,7 +166,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         }
     }
 
-    [SlashCommand("leaderboard", "Check the users who most worshipped jamie."), UsedImplicitly]
+    [SlashCommand("leaderboard", "Check the users who most worshipped jamie."), CommandCooldown(15), UsedImplicitly]
     public async Task LeaderBoardAsync()
     {
         List<List<object>> worships = DataBase.RunSqliteCommandAllRows("SELECT UserId FROM Worships");

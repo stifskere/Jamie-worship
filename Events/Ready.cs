@@ -16,14 +16,13 @@ public static class Ready
         InteractionService commands = new(Client);
 
         Client.InteractionCreated += async interaction =>  await commands.ExecuteCommandAsync(new SocketInteractionContext(Client, interaction), null);
-        commands.SlashCommandExecuted += (_, _, result) => {if(result.Error != null) Console.WriteLine(result); return Task.CompletedTask;};
+        commands.SlashCommandExecuted += (_, _, result) => {if(result.Error != null && result is not PreconditionResult) Console.WriteLine(result); return Task.CompletedTask;};
         await commands.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
         await commands.RegisterCommandsGloballyAsync();
         new Thread(CreateDatabasesThread).Start();
         await Client.SetActivityAsync(new Game("The jamie worship game but in beta"));
         //For pterodactyl, y'all can remove, i won't.
         Console.WriteLine("Started");
-        
     }
 
     private static void CreateDatabasesThread()

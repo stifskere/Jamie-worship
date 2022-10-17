@@ -64,11 +64,72 @@ public struct CustomClientConfig
     public CustomClientConfig(){}
 }
 
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class CommandCooldownAttribute : PreconditionAttribute
 {
+    private static readonly Dictionary<ulong, List<Command>> CooldownList = new();
+    private short Seconds { get; }
+    public CommandCooldownAttribute(short secs)
+    {
+        Seconds = secs;
+    }
+    
     public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
     {
-        return Task.FromResult(PreconditionResult.FromError(""));
+        string cName = $"{(context.Interaction.Data as SocketSlashCommandData)!.Name} {string.Join(" ", (context.Interaction.Data as SocketSlashCommandData)!.Options.Select(option => option.Name))}";
+
+        if (!CooldownList.ContainsKey(context.User.Id))
+        {
+            CooldownList.Add(context.User.Id, new List<Command>
+            {
+                new()
+                {
+                   Name = cName,
+                   Timestamp = DateTimeOffset.UtcNow.AddSeconds(Seconds)
+                }
+            });
+            return Task.FromResult(PreconditionResult.FromSuccess());
+        }
+        
+        if (CooldownList[context.User.Id].All(c => c.Name != cName))
+        {
+            CooldownList[context.User.Id].Add(new Command
+            {
+                Name = cName,
+                Timestamp = DateTimeOffset.UtcNow.AddSeconds(Seconds)
+            });
+        }
+
+        Command? command = CooldownList[context.User.Id].FirstOrDefault(c => c.Name == cName);
+        
+        if (command != null)
+        {
+            Command commandValue = command.Value;
+            if (commandValue.Timestamp.ToUnixTimeSeconds() < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+                CooldownList[context.User.Id].RemoveAll(c => c.Name == cName);
+            else
+            {
+                BotStatsHandler.CommandCount--;
+                BotStatsHandler.CommandUsage[cName]--;
+                
+                async void CoolDownMessageThread()
+                {
+                    await context.Interaction.RespondAsync($"This command is in cooldown, you will be able to use it <t:{commandValue.Timestamp.ToUnixTimeSeconds()}:R>", ephemeral: true);
+                    await Task.Delay((int)(commandValue.Timestamp.ToUnixTimeMilliseconds() - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()));
+                    await context.Interaction.ModifyOriginalResponseAsync(m => m.Content = "You are now able to use the command again.");
+                }
+                
+                new Thread(CoolDownMessageThread).Start();
+                return Task.FromResult(PreconditionResult.FromError(string.Empty));
+            }
+        }
+        return Task.FromResult(PreconditionResult.FromSuccess());
+    }
+
+    private struct Command
+    {
+        internal string Name { get; init; }
+        internal DateTimeOffset Timestamp { get; init; }
     }
 }
 

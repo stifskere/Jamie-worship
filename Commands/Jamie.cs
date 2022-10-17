@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
 namespace JamieWorshipper.Commands;
@@ -7,7 +8,7 @@ namespace JamieWorshipper.Commands;
 [Group("jamie", "Jamie related commands group.")]
 public class Jamie : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("profile", "View jamie profile."), UsedImplicitly]
+    [SlashCommand("profile", "View jamie profile."), CommandCooldown(15), UsedImplicitly]
     public async Task JamieProfileAsync()
     {
         IRole closeFriendsRole = Config.MainGuild.Roles.First(r => r.Id == 976175903371571220);
@@ -34,7 +35,7 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
         await RespondAsync(embed: embed.Build());
     }
 
-    [SlashCommand("gif", "Jamie gifgifgifgif."), RequireBotPermission(ChannelPermission.AttachFiles), UsedImplicitly]
+    [SlashCommand("gif", "Jamie gifgifgifgif."), CommandCooldown(30), RequireBotPermission(ChannelPermission.AttachFiles), UsedImplicitly]
     public async Task JamiePhotoAsync([Summary("Send", "Indicate whether send the gif to jamie or not.")]bool send)
     {
         HttpClient requestClient = new HttpClient();

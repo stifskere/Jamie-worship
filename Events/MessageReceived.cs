@@ -16,9 +16,9 @@ public static class MessageReceived
 
     public static async void MessageReceivedTask(SocketMessage message)
     {
-        if (message.Author.IsBot) return;
-
-        IGuild messageGuild = Client.Guilds.First(m => m.Channels.Any(c => c.Id == message.Channel.Id));
+        if (message.Author.IsBot || message.Channel is IDMChannel) return;
+        
+        IGuild messageGuild = (message.Channel as SocketGuildChannel)?.Guild ?? Client.Guilds.First(m => m.Channels.Any(c => c.Id == message.Channel.Id));
 
         if (message.Author.Id == Config.Jamie.Id && !string.IsNullOrEmpty(message.Content))
         {

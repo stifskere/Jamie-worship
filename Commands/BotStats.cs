@@ -2,6 +2,7 @@
 using System.Text;
 using Discord;
 using Discord.Interactions;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,7 +13,7 @@ namespace JamieWorshipper.Commands;
 [Group("bot", "Bot stats related command group.")]
 public class BotStats : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("stats", "View the actual bot status since start-up."), UsedImplicitly]
+    [SlashCommand("stats", "View the actual bot status since start-up."), CommandCooldown(15), UsedImplicitly]
     public async Task BotStatsAsync()
     {
         string usedCommandsString = "  Command Name  |  Count\n--------------------------\n";

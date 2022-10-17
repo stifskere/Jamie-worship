@@ -13,10 +13,21 @@ public static class BotStatsHandler
     [Event(EventTypes.SlashCommandExecuted), UsedImplicitly]
     public static Task SlashCommandExecutedEvent(SocketSlashCommand command)
     {
-        string dictName = $"{command.CommandName} {command.Data.Options.First().Name}";
+        UpdateUsage($"{command.CommandName} {string.Join(" ", command.Data.Options.Select(option => option.Name))}");
+        return Task.CompletedTask;
+    }
+
+    [Event(EventTypes.UserCommandExecuted), UsedImplicitly]
+    public static Task UserCommandExecutedEvent(SocketUserCommand command)
+    {
+        UpdateUsage($"{command.CommandName}");
+        return Task.CompletedTask;
+    }
+
+    private static void UpdateUsage(string dictName)
+    {
         if (CommandUsage.ContainsKey(dictName)) CommandUsage[dictName]++;
         else CommandUsage.Add(dictName, 1);
         CommandCount++;
-        return Task.CompletedTask;
     }
 }
