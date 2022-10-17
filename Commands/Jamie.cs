@@ -11,6 +11,8 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("profile", "View jamie profile."), CommandCooldown(15), UsedImplicitly]
     public async Task JamieProfileAsync()
     {
+        await DeferAsync();
+        
         IRole closeFriendsRole = Config.MainGuild.Roles.First(r => r.Id == 976175903371571220);
         List<List<object>> dbData = DataBase.RunSqliteCommandAllRows(@"
         SELECT count(*) FROM Worships UNION ALL
@@ -32,33 +34,41 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
             .WithThumbnailUrl(Config.Jamie.GetAvatarUrl())
             .WithColor(RandomColor());
 
-        await RespondAsync(embed: embed.Build());
+        await ModifyOriginalResponseAsync(r => r.Embed = embed.Build());
     }
 
     [SlashCommand("gif", "Jamie gifgifgifgif."), CommandCooldown(30), RequireBotPermission(ChannelPermission.AttachFiles), UsedImplicitly]
-    public async Task JamiePhotoAsync([Summary("Send", "Indicate whether send the gif to jamie or not.")]bool send)
+    public async Task JamiePhotoAsync([Summary("Send", "Indicate whether send the gif to jamie or not.")]bool send = false)
     {
-        HttpClient requestClient = new HttpClient();
-        using MemoryStream image = new MemoryStream(await requestClient.GetByteArrayAsync("https://cdn.memw.es/helloJamie.gif"));
-        await RespondWithFileAsync(image, "jamie.gif");
+        await DeferAsync();
+
+        if (!File.Exists("./JamieGif.gif"))
+        {
+            using MemoryStream image = new MemoryStream();
+            image.Write(await new HttpClient().GetByteArrayAsync("https://cdn.memw.es/helloJamie.gif"));
+            FileStream file = File.Create("./JamieGif.gif");
+            image.WriteTo(file);
+        }
+
+        await Context.Channel.SendFileAsync(filePath: "./JamieGif.gif");
         if (send)
             try
             {
-                List<List<object>> blackList =
-                    DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
+                List<List<object>> blackList = DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
                 if (blackList.Count > 0)
                 {
-                    await RespondAsync("🙅 You are in the blacklist, you cannot send anything to jamie. 🚫",
-                        ephemeral: true);
+                    await FollowupAsync("🙅 You are in the blacklist, you cannot send anything to jamie. 🚫");
                     return;
                 }
 
-                await Config.Jamie.SendFileAsync(image, "jamie.gif");
-                await FollowupAsync("The gif was sent to jamie", ephemeral: true);
+                await Config.Jamie.SendFileAsync("./JamieGif.gif");
+                await FollowupAsync("The gif was sent to jamie");
             }
             catch
             {
                 await FollowupAsync("An error occurred, the gif was not sent, maybe jamie blocked the bot, but you can still enjoy your gif without sending it.", ephemeral: true);
             }
+
+        await DeleteOriginalResponseAsync();
     }
 }

@@ -16,6 +16,8 @@ public class BotStats : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("stats", "View the actual bot status since start-up."), CommandCooldown(15), UsedImplicitly]
     public async Task BotStatsAsync()
     {
+        await DeferAsync();
+        
         string usedCommandsString = "  Command Name  |  Count\n--------------------------\n";
 
         if (CommandCount > 0)
@@ -56,6 +58,6 @@ public class BotStats : InteractionModuleBase<SocketInteractionContext>
             .WithFooter("Report any errors to Memw#6969")
             .WithCurrentTimestamp();
 
-        await RespondAsync(embed: embed.Build());
+        await ModifyOriginalResponseAsync(r => r.Embed = embed.Build());
     }
 }

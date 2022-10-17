@@ -12,6 +12,8 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("view", "View all of the worships sent to jamie."), CommandCooldown(60), UsedImplicitly]
     public async Task ViewAsync([Summary("Order", "The order which the worships will be displayed"), Choice("Ascending", "ASC"), Choice("Descending", "DESC")]string order = "ASC")
     {
+        await DeferAsync();
+        
         ButtonBuilder backButton = new ButtonBuilder()
             .WithStyle(ButtonStyle.Secondary)
             .WithLabel("Back")
@@ -33,7 +35,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
                 .WithDescription("Sadly jamie has no worshippers yet, Use `/worships do` to worship jamie")
                 .WithColor(RandomColor());
 
-            await RespondAsync(embed: noWorshipsEmbed.Build());
+            await ModifyOriginalResponseAsync(r => r.Embed = noWorshipsEmbed.Build());
             return;
         }
 
@@ -46,7 +48,11 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             .WithColor(RandomColor())
             .WithFooter($"Showing {start + 1}-{start + 6} out of {worshipData.Count}");
         
-        await RespondAsync(embed: GetPageEmbed(0).Build(), components: worshipData.Count <= 5 ? null : new ComponentBuilder().WithButton(forwardButton).Build());
+        await ModifyOriginalResponseAsync(r =>
+        {
+            r.Embed = GetPageEmbed(0).Build();
+            r.Components = worshipData.Count <= 5 ? null : new ComponentBuilder().WithButton(forwardButton).Build();
+        });
         
         if(worshipData.Count <= 5) return;
 
@@ -78,16 +84,20 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("do", "Worship Jamie!"), CommandCooldown(30), UsedImplicitly]
     public async Task DoAsync([Summary("Worship", "The worship paragraph"), MaxLength(300)]string worship)
     {
+        await DeferAsync();
+        
         if (Context.User.Id == Config.Jamie.Id)
         {
-            await RespondAsync("🚫 I know you are worthy but you can't worship yourself. 🚫", ephemeral: true);
+            await FollowupAsync("🚫 I know you are worthy but you can't worship yourself. 🚫", ephemeral: true);
+            await DeleteOriginalResponseAsync();
             return;
         }
         
         List<List<object>> blackList = DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
         if (blackList.Count > 0)
         {
-            await RespondAsync("🚫 You are in the blacklist, you cannot worship jamie. 🙅", ephemeral: true);
+            await FollowupAsync("🚫 You are in the blacklist, you cannot worship jamie. 🙅", ephemeral: true);
+            await DeleteOriginalResponseAsync();
             return;
         }
 
@@ -116,7 +126,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
                 .WithFooter("You can check other's worships using /worships view")
                 .WithColor(0x00ff00);
             
-            await RespondAsync(embed: worshipEmbed.Build());
+            await ModifyOriginalResponseAsync(r => r.Embed = worshipEmbed.Build());
         }
         catch
         {
@@ -126,16 +136,18 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
                 .WithFooter("You can retry, you don't lose anything.")
                 .WithColor(0xff0000);
 
-            await RespondAsync(embed: failedEmbed.Build());
+            await ModifyOriginalResponseAsync(r => r.Embed = failedEmbed.Build());
         }
     }
 
     [SlashCommand("reply", "Reply to some worship."), UsedImplicitly]
     public async Task ReplyAsync([Summary("ID", "Some worship ID.")]int id, [Summary("Reply", "What do you want to reply with?"), MaxLength(300)]string reply)
     {
+        await DeferAsync(ephemeral: true);
+        
         if (Context.User.Id != Config.Jamie.Id)
         {
-            await RespondAsync("🚫 Only Jamie can reply to worships, 👀 you don't look like Jamie!?", ephemeral: true);
+            await ModifyOriginalResponseAsync(r => r.Content = "🚫 Only Jamie can reply to worships, 👀 you don't look like Jamie!?");
             return;
         }
 
@@ -143,7 +155,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
 
         if (worship.Count == 0)
         {
-            await RespondAsync("Looks like a worship with this ID does not exist, use `/worships view` to view all the worships and them ID's");
+            await ModifyOriginalResponseAsync(r => r.Content = "Looks like a worship with this ID does not exist, use `/worships view` to view all the worships and them ID's");
             return;
         }
 
@@ -158,17 +170,18 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             
             IUser user = await Client.GetUserAsync((ulong)(long)worship[0]);
             await user.SendMessageAsync(embed: embed.Build());
-            await RespondAsync($"Your reply was sent to `{user}`", ephemeral: true);
+            await ModifyOriginalResponseAsync(r => r.Content = $"Your reply was sent to `{user}`");
         }
         catch
         {
-            await RespondAsync("There is no communication with the user you want to reply (The reply was not sent), you might want to reply them yourself.", ephemeral: true);
+            await ModifyOriginalResponseAsync(r => r.Content = "There is no communication with the user you want to reply (The reply was not sent), you might want to reply them yourself.");
         }
     }
 
     [SlashCommand("leaderboard", "Check the users who most worshipped jamie."), CommandCooldown(15), UsedImplicitly]
     public async Task LeaderBoardAsync()
     {
+        await DeferAsync();
         List<List<object>> worships = DataBase.RunSqliteCommandAllRows("SELECT UserId FROM Worships");
         Dictionary<ulong, int> worshipsCount = new();
         foreach (var user in worships)
@@ -184,6 +197,6 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             .WithFooter(thisUserPos != -1 ? $"You are {(thisUserPos < 3 ? $"{thisUserPos}st" : $"{thisUserPos}th")} with {thisUserOrdered.First(u => u.Key == Context.User.Id).Value} worships in a descending list of all the worshippers." : "You don't have any worship yet, use \"/worships do\" to worship jamie")
             .WithColor(RandomColor())
             .WithFields(topFive.Select(async (w, i) => new EmbedFieldBuilder().WithName($"{(i+1 < 3 ? $"{i+1}st." : $"{i+1}th.")} {await Client.GetUserAsync(w.Key)}").WithValue($"**With:** {w.Value} worships")).Select(t => t.Result));
-        await RespondAsync(embed: embed.Build());
+        await ModifyOriginalResponseAsync(r => r.Embed = embed.Build());
     }
 }

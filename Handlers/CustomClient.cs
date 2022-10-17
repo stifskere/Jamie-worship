@@ -91,15 +91,6 @@ public class CommandCooldownAttribute : PreconditionAttribute
             });
             return Task.FromResult(PreconditionResult.FromSuccess());
         }
-        
-        if (CooldownList[context.User.Id].All(c => c.Name != cName))
-        {
-            CooldownList[context.User.Id].Add(new Command
-            {
-                Name = cName,
-                Timestamp = DateTimeOffset.UtcNow.AddSeconds(Seconds)
-            });
-        }
 
         Command? command = CooldownList[context.User.Id].FirstOrDefault(c => c.Name == cName);
         
@@ -126,6 +117,15 @@ public class CommandCooldownAttribute : PreconditionAttribute
                 new Thread(CoolDownMessageThread).Start();
                 return Task.FromResult(PreconditionResult.FromError(string.Empty));
             }
+        }
+        
+        if (CooldownList[context.User.Id].All(c => c.Name != cName))
+        {
+            CooldownList[context.User.Id].Add(new Command
+            {
+                Name = cName,
+                Timestamp = DateTimeOffset.UtcNow.AddSeconds(Seconds)
+            });
         }
         return Task.FromResult(PreconditionResult.FromSuccess());
     }
