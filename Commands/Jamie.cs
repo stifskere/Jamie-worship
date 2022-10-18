@@ -55,18 +55,19 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
         }
 
         await Context.Channel.SendFileAsync(filePath: "./JamieGif.gif");
+        await ModifyOriginalResponseAsync(r => r.Content = "Loaded.");
         if (send)
             try
             {
                 List<List<object>> blackList = DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
                 if (blackList.Count > 0)
                 {
-                    await FollowupAsync("🙅 You are in the blacklist, you cannot send anything to jamie. 🚫");
+                    await FollowupAsync("🙅 You are in the blacklist, you cannot send anything to jamie. 🚫", ephemeral: true);
                     return;
                 }
 
                 await Config.Jamie.SendFileAsync("./JamieGif.gif");
-                await FollowupAsync("The gif was sent to jamie");
+                await FollowupAsync("The gif was sent to jamie", ephemeral: true);
             }
             catch
             {

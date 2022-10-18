@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Discord;
 using Discord.Interactions;
 using JamieWorshipper.Handlers;
@@ -20,9 +21,23 @@ public static class Ready
         await commands.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
         await commands.RegisterCommandsGloballyAsync();
         new Thread(CreateDatabasesThread).Start();
-        await Client.SetActivityAsync(new Game("The jamie worship game but in beta"));
+        new Thread(StatusThread).Start();
         //For pterodactyl, y'all can remove, i won't.
         Console.WriteLine("Started");
+        BotStatsHandler.Uptime = DateTimeOffset.Now;
+    }
+
+    [DoesNotReturn]
+    private static async void StatusThread()
+    {
+        KeyValuePair<string, ActivityType>[] possibleStatuses = {new("the bug avoid game", ActivityType.Playing), new("how i'm being coded", ActivityType.Watching), new("with jamie", ActivityType.Playing)};
+        while (true)
+            foreach (KeyValuePair<string, ActivityType> current in possibleStatuses)
+            {
+                await Client.SetActivityAsync(new Game(current.Key, current.Value));
+                Thread.Sleep(TimeSpan.FromHours(3));
+            }
+        // ReSharper disable once FunctionNeverReturns
     }
 
     private static void CreateDatabasesThread()

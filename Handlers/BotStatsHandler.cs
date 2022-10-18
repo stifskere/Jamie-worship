@@ -8,7 +8,7 @@ public static class BotStatsHandler
     public static Dictionary<string, int> CommandUsage { get; } = new();
     public static int WorshipsNum { get; internal set; }
     public static int CommandCount { get; internal set; }
-    public static DateTimeOffset Uptime { get; } = DateTimeOffset.Now;
+    public static DateTimeOffset Uptime { get; set; }
     
     [Event(EventTypes.SlashCommandExecuted), UsedImplicitly]
     public static Task SlashCommandExecutedEvent(SocketSlashCommand command)
