@@ -60,9 +60,11 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
 
         Client.ButtonExecuted += async component =>
         {
+            await component.DeferAsync(ephemeral: true);
+            
             if (component.User.Id != Context.User.Id)
             {
-                await component.RespondAsync("This interaction is not yours, run `/worships view` yourself.", ephemeral: true);
+                await component.ModifyOriginalResponseAsync(r => r.Content = "This interaction is not yours, run `/worships view` yourself.");
                 return;
             }
 
@@ -76,8 +78,6 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
                 m.Embed = GetPageEmbed(currentIndex).Build();
                 m.Components = instanceComponentBuilder.Build();
             });
-
-            await component.DeferAsync();
         };
     }
 
@@ -196,7 +196,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             .WithDescription("🙏 these are the top 5 worshipers who worshiped the most 🙏")
             .WithFooter(thisUserPos != -1 ? $"You are {(thisUserPos < 3 ? $"{thisUserPos}st" : $"{thisUserPos}th")} with {thisUserOrdered.First(u => u.Key == Context.User.Id).Value} worships in a descending list of all the worshippers." : "You don't have any worship yet, use \"/worships do\" to worship jamie")
             .WithColor(RandomColor())
-            .WithFields(topFive.Select(async (w, i) => new EmbedFieldBuilder().WithName($"{(i+1 < 3 ? $"{i+1}st." : $"{i+1}th.")} {await Client.GetUserAsync(w.Key)}").WithValue($"**With:** {w.Value} worships")).Select(t => t.Result));
+            .WithFields(topFive.Select(async (w, i) => new EmbedFieldBuilder().WithName($"{i + 1}{((i + 1) % 10) switch {1 => "st", 2 => "nd", 3 => "rd", _ => "th"}} {await Client.GetUserAsync(w.Key)}").WithValue($"**With:** {w.Value} worships")).Select(t => t.Result));
         await ModifyOriginalResponseAsync(r => r.Embed = embed.Build());
     }
 }
