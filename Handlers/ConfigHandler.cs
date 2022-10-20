@@ -11,22 +11,40 @@ public class ConfigHandler
     public IUser Jamie { get; private set; } = null!;
     public ulong[] Moderators { get; private set; } = Array.Empty<ulong>();
 
+    public IRole CloseFriendsRole { get; set; } = null!;
+
     [UsedImplicitly] private ulong _privateMessagesChannel = 1;
     [UsedImplicitly] private ulong _privateMainGuild = 1;
     [UsedImplicitly] private ulong _privateJamieId = 1;
+    [UsedImplicitly] private ulong _privateCloseFriendsRole = 1;
     
-    public ConfigHandler() => new Thread(ReloadConfig).Start();
+    public ConfigHandler() => new Thread(() => ReloadConfig().Wait()).Start();
 
-    public async void ReloadConfig()
+    public async Task<ChangeConfigResult> ReloadConfig()
     {
-        while (Client.ConnectionState != ConnectionState.Connected) { }
-        foreach (List<object> data in DataBase.RunSqliteCommandAllRows("SELECT ConfigKey, ConfigValue FROM BotConfig"))
-            GetType().GetField($"_private{(string)data[0]}", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)!.SetValue(this, ulong.Parse((string)data[1]));
+        Exception? result = null;
+        try
+        {
+            while (Client.ConnectionState != ConnectionState.Connected) { }
+            foreach (List<object> data in DataBase.RunSqliteCommandAllRows("SELECT ConfigKey, ConfigValue FROM BotConfig"))
+                GetType().GetField($"_private{(string)data[0]}", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)!
+                    .SetValue(this, ulong.Parse((string)data[1]));
 
-        MainGuild = Client.GetGuild(_privateMainGuild);
-        MessagesChannel = (ITextChannel)await Client.GetChannelAsync(_privateMessagesChannel);
-        Jamie = await Client.GetUserAsync(_privateJamieId);
-        
-        Moderators = Client.Env["MODERATORS"].Split(",").Select(ulong.Parse).ToArray();
+            MainGuild = Client.GetGuild(_privateMainGuild);
+            MessagesChannel = (ITextChannel)await Client.GetChannelAsync(_privateMessagesChannel);
+            Jamie = await Client.GetUserAsync(_privateJamieId);
+            Moderators = Client.Env["MODERATORS"].Split(",").Select(ulong.Parse).ToArray();
+            CloseFriendsRole = MainGuild.Roles.First(r => r.Id == _privateCloseFriendsRole);
+        }
+        catch (Exception ex)
+        {
+            result = ex;
+        }
+        return new ChangeConfigResult { Exception = result };
     }
+}
+
+public struct ChangeConfigResult
+{
+    public Exception? Exception { get; init; }
 }

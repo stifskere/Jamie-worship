@@ -25,6 +25,7 @@ public static class Ready
         //For pterodactyl, y'all can remove, i won't.
         Console.WriteLine("Started");
         BotStatsHandler.Uptime = DateTimeOffset.Now;
+        Config = new();
     }
 
     [DoesNotReturn]
@@ -51,7 +52,7 @@ public static class Ready
 
         DataBase.RunSqliteCommandAllRows(@"
             INSERT OR IGNORE INTO JamieInfo(InfoKey, InfoValue) VALUES('MessageNum', '0'), ('LastMessage', 'Any ""last message"" sent yet');
-            INSERT OR IGNORE INTO BotConfig(ConfigKey, ConfigValue) VALUES('MessagesChannel', '976832701015420998'), ('MainGuild', '976149800447770624'), ('JamieId', '394127601398054912');
+            INSERT OR IGNORE INTO BotConfig(ConfigKey, ConfigValue) VALUES('MessagesChannel', '976832701015420998'), ('MainGuild', '976149800447770624'), ('JamieId', '394127601398054912'), ('CloseFriendsRole', '976175903371571220');
             ");
     }
         

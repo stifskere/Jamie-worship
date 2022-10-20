@@ -13,7 +13,7 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync();
         
-        IRole closeFriendsRole = Config.MainGuild.Roles.First(r => r.Id == 976175903371571220);
+        IRole closeFriendsRole = Config.MainGuild.Roles.First(r => r.Id == Config.CloseFriendsRole.Id);
         List<List<object>> dbData = DataBase.RunSqliteCommandAllRows(@"
         SELECT count(*) FROM Worships UNION ALL
         SELECT InfoValue FROM JamieInfo WHERE InfoKey = 'MessageNum' UNION ALL

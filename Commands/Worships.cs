@@ -108,7 +108,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         try
         {
             string[] phrases = {"You got worshipped my lord", "Someone worshipped you", "They are glad you exist", "Hello god, I got a worship"};
-            List<object> worshipCount = DataBase.RunSqliteCommandFirstRow("SELECT Count(*) FROM Worships");
+            List<object> worshipCount = DataBase.RunSqliteCommandFirstRow("SELECT Count(*) - 1 FROM Worships");
             
             EmbedBuilder sentWorshipEmbed = new EmbedBuilder()
                 .WithTitle(phrases[new Random().Next(0, phrases.Length - 1)])

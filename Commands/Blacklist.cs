@@ -13,13 +13,13 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
     {
         if (!Config.Moderators.Contains(user.Id))
         {
-            await RespondAsync("You cannot blacklist/un-blacklist worshippers, you need to be a JamieWorship moderator.", ephemeral: true);
+            await RespondAsync("❌ You cannot blacklist/un-blacklist worshippers, you need to be a JamieWorship moderator. ❌", ephemeral: true);
             return false;
         }
 
         if (Config.Moderators.Contains(target.Id))
         {
-            await RespondAsync("You cannot blacklist/un-blacklist yourself or any moderator.", ephemeral: true);
+            await RespondAsync("❌ You cannot blacklist/un-blacklist yourself or any moderator. ❌", ephemeral: true);
             return false;
         }
 
