@@ -20,9 +20,9 @@ public class ConfigHandler
     
     public ConfigHandler() => new Thread(() => ReloadConfig().Wait()).Start();
 
-    public async Task<ChangeConfigResult> ReloadConfig()
+    public async Task<Exception?> ReloadConfig()
     {
-        Exception? result = null;
+        Exception? returnException = null;
         try
         {
             while (Client.ConnectionState != ConnectionState.Connected) { }
@@ -38,13 +38,8 @@ public class ConfigHandler
         }
         catch (Exception ex)
         {
-            result = ex;
+            returnException = ex;
         }
-        return new ChangeConfigResult { Exception = result };
+        return returnException;
     }
-}
-
-public struct ChangeConfigResult
-{
-    public Exception? Exception { get; init; }
 }

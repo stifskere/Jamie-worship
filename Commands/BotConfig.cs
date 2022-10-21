@@ -1,13 +1,19 @@
+using Discord;
 using Discord.Interactions;
-using JamieWorshipper.Handlers;
 using JetBrains.Annotations;    
 
 namespace JamieWorshipper.Commands;
 
 public class BotConfig : InteractionModuleBase<SocketInteractionContext>
 {
-    //[SlashCommand("config", "Lets the moderators change the global bot config."), UsedImplicitly]
-    public async Task ChangeConfigAsync()
+    [SlashCommand("config", "Lets the moderators change the global bot config."), UsedImplicitly]
+    public async Task ChangeConfigAsync(
+        [Summary("Key", "Config parameter want to be set"),
+         Choice("Jamie messages channel", "MessagesChannel"),
+         Choice("Main guild", "MainGuild"),
+         Choice("Jamie ID", "JamieId"),
+         Choice("Close friends role", "CloseFriendsRole")]string key, 
+        [Summary("Value", "The value want to be set to such config parameter")]string value)
     {
         await DeferAsync(ephemeral: true);
         
@@ -17,16 +23,31 @@ public class BotConfig : InteractionModuleBase<SocketInteractionContext>
             return;
         }
 
-        ConfigHandler savedConfig = Config;
-        ChangeConfigResult res = await Config.ReloadConfig();
+        List<object> valueSave = DataBase.RunSqliteCommandFirstRow($"SELECT ConfigValue FROM BotConfig WHERE ConfigKey = '{key}'");
+        DataBase.RunSqliteCommandAllRows($"UPDATE BotConfig SET ConfigValue = '{value}' WHERE ConfigKey = '{key}'");
+        
+        Exception? res = await Config.ReloadConfig();
+        if (res != null)
+        {
+            DataBase.RunSqliteCommandAllRows($"UPDATE BotConfig SET ConfigValue = '{valueSave[0]}' WHERE ConfigKey = '{key}'");
+            await Config.ReloadConfig();
 
-        if (res.Exception != null)
-        {
-            await ModifyOriginalResponseAsync(r => r.Content = $"There was an error with your new config: {res.Exception.Message}");
+            EmbedBuilder errorEmbed = new EmbedBuilder()
+                .WithTitle("There was an error with your config.")
+                .WithDescription($"The error says the following\n```\n{res.Message}\n```")
+                .WithCurrentTimestamp()
+                .WithColor(0xff0000);
+            
+            await ModifyOriginalResponseAsync(r => r.Embed = errorEmbed.Build());
+            return;
         }
-        else
-        {
-            await ModifyOriginalResponseAsync(r => r.Content = "Your configuration values were changed successfully, the new configuration values were:");
-        }
+
+        EmbedBuilder successEmbed = new EmbedBuilder()
+            .WithTitle("The config was changed successfully")
+            .AddField("Values", $"```diff\n- {key}: {valueSave[0]}\n+ {key}: {value}\n```")
+            .WithCurrentTimestamp()
+            .WithColor(0x00ff00);
+
+        await ModifyOriginalResponseAsync(r => r.Embed = successEmbed.Build());
     }    
 }
