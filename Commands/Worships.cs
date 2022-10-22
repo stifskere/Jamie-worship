@@ -140,16 +140,10 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         }
     }
 
-    [SlashCommand("reply", "Reply to some worship."), UsedImplicitly]
+    [SlashCommand("reply", "Reply to some worship."), UsedImplicitly, OnlyModerators(ModeratorsSelection.OnlyJamie, "🚫 Only Jamie can reply to worships, 👀 you don't look like Jamie!?")]
     public async Task ReplyAsync([Summary("ID", "Some worship ID.")]int id, [Summary("Reply", "What do you want to reply with?"), MaxLength(300)]string reply)
     {
         await DeferAsync(ephemeral: true);
-        
-        if (Context.User.Id != Config.Jamie.Id)
-        {
-            await ModifyOriginalResponseAsync(r => r.Content = "🚫 Only Jamie can reply to worships, 👀 you don't look like Jamie!?");
-            return;
-        }
 
         List<object> worship = DataBase.RunSqliteCommandFirstRow($"SELECT UserId, Worship, Guild, Id FROM Worships WHERE Id = {id}");
 

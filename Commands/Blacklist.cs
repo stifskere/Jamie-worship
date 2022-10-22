@@ -1,35 +1,29 @@
 ﻿using Discord;
 using Discord.Interactions;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
 namespace JamieWorshipper.Commands;
 
-[UsedImplicitly]
 public class Blacklist : InteractionModuleBase<SocketInteractionContext>
 {
     private static List<object> GetBlackListData(IUser target) => DataBase.RunSqliteCommandFirstRow($"SELECT Id FROM BlackListedUsers WHERE Id = {target.Id}");
 
-    private async Task<bool> CanInteract(IUser target, IUser user)
+    private async Task<bool> CanInteract(IUser target)
     {
-        if (!Config.Moderators.Contains(user.Id))
-        {
-            await RespondAsync("❌ You cannot blacklist/un-blacklist worshippers, you need to be a JamieWorship moderator. ❌", ephemeral: true);
-            return false;
-        }
-
         if (Config.Moderators.Contains(target.Id))
         {
-            await RespondAsync("❌ You cannot blacklist/un-blacklist yourself or any moderator. ❌", ephemeral: true);
+            await RespondAsync("❌ You cannot blacklist/un-blacklist yourself nor any moderator. ❌", ephemeral: true);
             return false;
         }
 
         return true;
     }
     
-    [UserCommand("Blacklist"), UsedImplicitly]
+    [UserCommand("Blacklist"), UsedImplicitly, OnlyModerators(ModeratorsSelection.AllMods, "❌ You cannot blacklist worshippers, you require to be a bot moderator to do so. ❌")]
     public async Task BlackListAsync(IUser target)
     {
-        if (!await CanInteract(target, Context.User)) return;
+        if (!await CanInteract(target)) return;
 
         List<object> data = GetBlackListData(target);
         
@@ -41,10 +35,10 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
         else await RespondAsync($"{target.Mention} is already blacklisted, they can't send worships until un-blacklist", ephemeral: true);
     }
 
-    [UserCommand("Whitelist"), UsedImplicitly]
+    [UserCommand("Whitelist"), UsedImplicitly, OnlyModerators(ModeratorsSelection.AllMods, "❌ You cannot whitelist worshippers, you require to be a bot moderator to do so. ❌")]
     public async Task WhiteListAsync(IUser target)
     {
-        if (!await CanInteract(target, Context.User)) return;
+        if (!await CanInteract(target)) return;
 
         List<object> data = GetBlackListData(target);
         

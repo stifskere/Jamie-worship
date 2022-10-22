@@ -76,8 +76,14 @@ public class CommandCooldownAttribute : PreconditionAttribute
     
     public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
     {
-        SocketSlashCommandData cmd = (context.Interaction.Data as SocketSlashCommandData)!;
-        string cName = $"{cmd.Name} {string.Join(" ", cmd.Options.Select(option => option.Name))}";
+        string cName;
+        if (context.Interaction.Data is SocketSlashCommandData slashData)
+            cName = $"{slashData.Name} {string.Join(" ", slashData.Options.Select(option => option.Name))}";
+        else
+        {
+            SocketUserCommandData userData = (context.Interaction.Data as SocketUserCommandData)!;
+            cName = $"{userData.Name}";
+        }
 
         if (!CooldownList.ContainsKey(context.User.Id))
         {
@@ -137,6 +143,56 @@ public class CommandCooldownAttribute : PreconditionAttribute
         internal string Name { get; init; }
         internal DateTimeOffset Timestamp { get; init; }
     }
+}
+
+[AttributeUsage(AttributeTargets.Method)]
+public class OnlyModeratorsAttribute : PreconditionAttribute
+{
+    private ModeratorsSelection ModeratorsSelection { get; }
+    private string ErrorString { get; }
+
+    public OnlyModeratorsAttribute(ModeratorsSelection selection, string errorString)
+    {
+        ModeratorsSelection = selection;
+        ErrorString = errorString;
+    }
+
+    private static void RemoveFromStats(IInteractionContext context)
+    {
+        string cName;
+        if (context.Interaction.Data is SocketSlashCommandData slashData)
+            cName = $"{slashData.Name} {string.Join(" ", slashData.Options.Select(option => option.Name))}";
+        else
+        {
+            SocketUserCommandData userData = (context.Interaction.Data as SocketUserCommandData)!;
+            cName = $"{userData.Name}";
+        }
+            
+        if (BotStatsHandler.CommandUsage.ContainsKey(cName))
+        {
+            BotStatsHandler.CommandCount--;
+            BotStatsHandler.CommandUsage[cName]--;
+        }
+    }
+    
+    public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
+    {
+        if ((ModeratorsSelection == ModeratorsSelection.AllMods && !Config.Moderators.Contains(context.User.Id)) 
+            || (ModeratorsSelection == ModeratorsSelection.OnlyJamie && Config.Jamie.Id != context.User.Id))
+        {
+            RemoveFromStats(context);
+            await context.Interaction.RespondAsync(ErrorString, ephemeral: true);
+            return PreconditionResult.FromError(string.Empty);
+        }
+
+        return PreconditionResult.FromSuccess();
+    }
+}
+
+public enum ModeratorsSelection
+{
+    AllMods,
+    OnlyJamie
 }
 
 [AttributeUsage(AttributeTargets.Method)]

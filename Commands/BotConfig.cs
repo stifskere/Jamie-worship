@@ -1,12 +1,13 @@
 using Discord;
 using Discord.Interactions;
+using JamieWorshipper.Handlers;
 using JetBrains.Annotations;    
 
 namespace JamieWorshipper.Commands;
 
 public class BotConfig : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("config", "Lets the moderators change the global bot config."), UsedImplicitly]
+    [SlashCommand("config", "Lets the moderators change the global bot config."), UsedImplicitly, OnlyModerators(ModeratorsSelection.AllMods, "❌ You cannot change the bot global configuration as you are not a bot moderator ❌")]
     public async Task ChangeConfigAsync(
         [Summary("Key", "Config parameter want to be set"),
          Choice("Jamie messages channel", "MessagesChannel"),
@@ -16,12 +17,6 @@ public class BotConfig : InteractionModuleBase<SocketInteractionContext>
         [Summary("Value", "The value want to be set to such config parameter")]string value)
     {
         await DeferAsync(ephemeral: true);
-        
-        if (!Config.Moderators.Contains(Context.User.Id))
-        {
-            await ModifyOriginalResponseAsync(r => r.Content = "❌ You cannot change the bot global configuration as you are not a bot moderator ❌");
-            return;
-        }
 
         List<object> valueSave = DataBase.RunSqliteCommandFirstRow($"SELECT ConfigValue FROM BotConfig WHERE ConfigKey = '{key}'");
         DataBase.RunSqliteCommandAllRows($"UPDATE BotConfig SET ConfigValue = '{value}' WHERE ConfigKey = '{key}'");
@@ -34,7 +29,7 @@ public class BotConfig : InteractionModuleBase<SocketInteractionContext>
 
             EmbedBuilder errorEmbed = new EmbedBuilder()
                 .WithTitle("There was an error with your config.")
-                .WithDescription($"The error says the following\n```\n{res.Message}\n```")
+                .WithDescription($"The error says the following\n```\n{(res is NullReferenceException ? "The bot can't access such item ID" : res.Message)}\n```")
                 .WithCurrentTimestamp()
                 .WithColor(0xff0000);
             
