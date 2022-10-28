@@ -20,18 +20,27 @@ public static class Ready
         commands.SlashCommandExecuted += (_, _, result) => {if(result.Error != null && result is not PreconditionResult) Console.WriteLine(result); return Task.CompletedTask;};
         await commands.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
         await commands.RegisterCommandsGloballyAsync();
+        Config = new ConfigHandler();
         new Thread(CreateDatabasesThread).Start();
         new Thread(StatusThread).Start();
+        BotStatsHandler.Uptime = DateTimeOffset.Now;
         //For pterodactyl, y'all can remove, i won't.
         Console.WriteLine("Started");
-        BotStatsHandler.Uptime = DateTimeOffset.Now;
-        Config = new();
     }
 
     [DoesNotReturn]
     private static async void StatusThread()
     {
-        KeyValuePair<string, ActivityType>[] possibleStatuses = {new("the bug avoid game", ActivityType.Playing), new("how i'm being coded", ActivityType.Watching), new("with jamie", ActivityType.Playing)};
+        while (!Config.Ready) {}
+        
+        KeyValuePair<string, ActivityType>[] possibleStatuses =
+        {
+            new(Config.Jamie.Username, ActivityType.Watching),
+            new($"how worshippers worship {Config.Jamie.Username}", ActivityType.Watching),
+            new($"with {Config.Jamie.Username}", ActivityType.Playing),
+            new($"{Config.Jamie.Username} scream about his DMS", ActivityType.Listening)
+        };
+        
         while (true)
             foreach (KeyValuePair<string, ActivityType> current in possibleStatuses)
             {

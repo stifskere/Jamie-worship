@@ -9,7 +9,7 @@ namespace JamieWorshipper;
 
 public static class Program
 {
-    public static readonly CustomClient Client = new(new DiscordSocketConfig{GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers | GatewayIntents.MessageContent}, new CustomClientConfig{EnvPath = "./.env"});
+    public static readonly CustomClient Client = new(new DiscordSocketConfig{GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers | GatewayIntents.MessageContent | GatewayIntents.GuildMessages}, new CustomClientConfig{EnvPath = "./.env"});
     public static readonly DatabaseHandler DataBase = new("./global.db");
     public static ConfigHandler Config = null!;
     

@@ -32,12 +32,14 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         {
             EmbedBuilder noWorshipsEmbed = new EmbedBuilder()
                 .WithTitle("No worships :(")
-                .WithDescription("Sadly jamie has no worshippers yet, Use `/worships do` to worship jamie")
+                .WithDescription($"Sadly {Config.Jamie.Username} has no worshippers yet, Use `/worships do` to worship jamie")
                 .WithColor(RandomColor());
 
             await ModifyOriginalResponseAsync(r => r.Embed = noWorshipsEmbed.Build());
             return;
         }
+
+        uint embedColor = RandomColor();
 
         EmbedBuilder GetPageEmbed(int start) => new EmbedBuilder()
             .WithTitle("Here are all the worshipers")
@@ -45,7 +47,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
                 .WithName($"User: {await Client.GetUserAsync((ulong)(long)s[0])}")
                 .WithValue($"**ID:** {s[3]}\n**Worship:** {s[1]}\n**Guild:** {(string)s[2]}")
             ).Select(r => r.Result))
-            .WithColor(RandomColor())
+            .WithColor(embedColor)
             .WithFooter($"Showing {start + 1}-{start + 6} out of {worshipData.Count}");
         
         await ModifyOriginalResponseAsync(r =>

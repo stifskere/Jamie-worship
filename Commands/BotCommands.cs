@@ -10,8 +10,8 @@ using static JamieWorshipper.Handlers.BotStatsHandler;
 
 namespace JamieWorshipper.Commands;
 
-[Group("bot", "Bot stats related command group.")]
-public class BotStats : InteractionModuleBase<SocketInteractionContext>
+[Group("bot", "Bot commands related command group.")]
+public class BotCommands : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("stats", "View the actual bot status since start-up."), CommandCooldown(15), UsedImplicitly]
     public async Task BotStatsAsync()
@@ -43,7 +43,7 @@ public class BotStats : InteractionModuleBase<SocketInteractionContext>
             requestClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("JamieWorshipper", "1.0"));
             requestClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             
-            for (float i = 1; i < float.PositiveInfinity; i++)
+            for (int i = 0;;i++)
             {
                 JArray gitObj = (JArray)JsonConvert.DeserializeObject(await requestClient.GetStringAsync($"https://api.github.com/repos/stifskere/Jamie-worship/commits?per_page=100&page={i}"))!;
                 commits = commits.Concat(gitObj.ToObject<dynamic[]>()!).ToArray();
@@ -71,5 +71,44 @@ public class BotStats : InteractionModuleBase<SocketInteractionContext>
         embed.Fields[2].Value = $"**Commits:** {commits.Length}\n**Last commit name:** {commits[0].commit.message}\n**Last commit author:** {commits[0].commit.author.name}\n**Last commit content:** [click to view changes]({commits[0].html_url})";
         
         await ModifyOriginalResponseAsync(r => r.Embed = embed.Build());
+    }
+    
+    [SlashCommand("config", "Lets the moderators change the global bot config."), UsedImplicitly, OnlyModerators(ModeratorsSelection.AllMods, "❌ You cannot change the bot global configuration as you are not a bot moderator ❌")]
+    public async Task ChangeConfigAsync(
+        [Summary("Key", "Config parameter want to be set"),
+         Choice("Jamie messages channel", "MessagesChannel"),
+         Choice("Main guild", "MainGuild"),
+         Choice("Jamie ID", "JamieId"),
+         Choice("Close friends role", "CloseFriendsRole")]string key, 
+        [Summary("Value", "The value want to be set to such config parameter")]string value)
+    {
+        await DeferAsync(ephemeral: true);
+
+        List<object> valueSave = DataBase.RunSqliteCommandFirstRow($"SELECT ConfigValue FROM BotConfig WHERE ConfigKey = '{key}'");
+        DataBase.RunSqliteCommandAllRows($"UPDATE BotConfig SET ConfigValue = '{value}' WHERE ConfigKey = '{key}'");
+        
+        Exception? res = await Config.ReloadConfig();
+        if (res != null)
+        {
+            DataBase.RunSqliteCommandAllRows($"UPDATE BotConfig SET ConfigValue = '{valueSave[0]}' WHERE ConfigKey = '{key}'");
+            await Config.ReloadConfig();
+
+            EmbedBuilder errorEmbed = new EmbedBuilder()
+                .WithTitle("There was an error with your config.")
+                .WithDescription($"The error says the following\n```\n{(res is NullReferenceException ? "The bot can't access such item ID" : res.Message)}\n```")
+                .WithCurrentTimestamp()
+                .WithColor(0xff0000);
+            
+            await ModifyOriginalResponseAsync(r => r.Embed = errorEmbed.Build());
+            return;
+        }
+
+        EmbedBuilder successEmbed = new EmbedBuilder()
+            .WithTitle("The config was changed successfully")
+            .AddField("Values", $"```diff\n- {key}: {valueSave[0]}\n+ {key}: {value}\n```")
+            .WithCurrentTimestamp()
+            .WithColor(0x00ff00);
+
+        await ModifyOriginalResponseAsync(r => r.Embed = successEmbed.Build());
     }
 }

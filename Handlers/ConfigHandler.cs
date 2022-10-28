@@ -17,6 +17,8 @@ public class ConfigHandler
     [UsedImplicitly] private ulong _privateMainGuild = 1;
     [UsedImplicitly] private ulong _privateJamieId = 1;
     [UsedImplicitly] private ulong _privateCloseFriendsRole = 1;
+
+    public bool Ready;
     
     public ConfigHandler() => new Thread(() => ReloadConfig().Wait()).Start();
 
@@ -25,9 +27,10 @@ public class ConfigHandler
         Exception? returnException = null;
         try
         {
-            while (Client.ConnectionState != ConnectionState.Connected) { }
+            while (Client.ConnectionState != ConnectionState.Connected) {}
             foreach (List<object> data in DataBase.RunSqliteCommandAllRows("SELECT ConfigKey, ConfigValue FROM BotConfig"))
-                GetType().GetField($"_private{(string)data[0]}", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)!
+                GetType()
+                    .GetField($"_private{(string)data[0]}", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)!
                     .SetValue(this, ulong.Parse((string)data[1]));
 
             MainGuild = Client.GetGuild(_privateMainGuild);
@@ -40,6 +43,11 @@ public class ConfigHandler
         {
             returnException = ex;
         }
+        finally
+        {
+            Ready = true;
+        }
+        
         return returnException;
     }
 }
