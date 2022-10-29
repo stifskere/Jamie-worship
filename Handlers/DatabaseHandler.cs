@@ -42,6 +42,4 @@ public class DatabaseHandler
         List<List<object>> data = RunSqliteCommandAllRows(command, parameters);
         return data.Count == 0 ? new List<object>() : data[0];
     }
-
-    public static string ParseInput(string input) => input.Replace(@"\", "\\").Replace("'", "\'");
 }

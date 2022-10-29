@@ -119,7 +119,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             
             await Config.Jamie.SendMessageAsync(embed: sentWorshipEmbed.Build());
 
-            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, @0, @1, null)", DatabaseHandler.ParseInput(worship), Context.Interaction.IsDMInteraction ? "Private messages" : DatabaseHandler.ParseInput(Context.Guild.Name));
+            DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, @0, @1, null)", worship, Context.Interaction.IsDMInteraction ? "Private messages" : Context.Guild.Name);
             BotStatsHandler.WorshipsNum++;
             
             EmbedBuilder worshipEmbed = new EmbedBuilder()
