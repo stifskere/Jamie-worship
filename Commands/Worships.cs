@@ -16,7 +16,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
     private static EmbedBuilder GetPageEmbed(int start, uint embedColor) => new EmbedBuilder()
         .WithTitle("Here are all the worshipers")
         .WithFields(_worshipData.Skip(start).Take(5).Select(async s => new EmbedFieldBuilder()
-            .WithName($"User: {await Client.GetUserAsync((ulong)(long)s[0])}")
+            .WithName($"User: {(await Client.GetUserAsync((ulong)(long)s[0])).ToString() ?? "Not found#0000"}")
             .WithValue($"**ID:** {s[3]}\n**Worship:** {s[1]}\n**Guild:** {(string)s[2]}")
         ).Select(r => r.Result))
         .WithColor(embedColor)
@@ -227,7 +227,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             .WithDescription("🙏 these are the top 5 worshipers who worshiped the most 🙏")
             .WithFooter(thisUserPos != -1 ? $"You are {(thisUserPos < 3 ? $"{thisUserPos}st" : $"{thisUserPos}th")} with {thisUserOrdered.First(u => u.Key == Context.User.Id).Value} worships in a descending list of all the worshippers." : "You don't have any worship yet, use \"/worships do\" to worship jamie")
             .WithColor(RandomColor())
-            .WithFields(topFive.Select(async (w, i) => new EmbedFieldBuilder().WithName($"{i + 1}{((i + 1) % 10) switch {1 => "st", 2 => "nd", 3 => "rd", _ => "th"}} {await Client.GetUserAsync(w.Key)}").WithValue($"**With:** {w.Value} worships")).Select(t => t.Result));
+            .WithFields(topFive.Select(async (w, i) => new EmbedFieldBuilder().WithName($"{i + 1}{((i + 1) % 10) switch {1 => "st", 2 => "nd", 3 => "rd", _ => "th"}} {(await Client.GetUserAsync(w.Key)).ToString() ?? "Not found#0000"}").WithValue($"**With:** {w.Value} worships")).Select(t => t.Result));
         await ModifyOriginalResponseAsync(r => r.Embed = embed.Build());
     }
 }
