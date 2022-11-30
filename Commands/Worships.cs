@@ -41,7 +41,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
         .WithEmote(new Emoji("➡"))
         .WithCustomId("Forward");
     
-    [Event(EventTypes.ButtonExecuted)]
+    [Event(EventTypes.ButtonExecuted), UsedImplicitly]
     public static async Task ViewWorshipsButtonsEvent(SocketMessageComponent component)
     {
         if (component.Data.CustomId is not ("Back" or "Forward")) return;
