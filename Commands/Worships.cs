@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
 using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
@@ -10,112 +9,23 @@ namespace JamieWorshipper.Commands;
 [Group("worships", "Worships related command group.")]
 public class Worships : InteractionModuleBase<SocketInteractionContext>
 {
-    private static List<List<object>> _worshipData = new();
-    private static readonly Dictionary<ulong, ViewWorshipsInstance> ViewWorshipsInstances = new();
-
-    private static EmbedBuilder GetPageEmbed(int start, uint embedColor) => new EmbedBuilder()
-        .WithTitle("Here are all the worshipers")
-        .WithFields(_worshipData.Skip(start).Take(5).Select(async s => new EmbedFieldBuilder()
-            .WithName($"User: {(await Client.GetUserAsync((ulong)(long)s[0])).ToString() ?? "Not found#0000"}")
-            .WithValue($"**ID:** {s[3]}\n**Worship:** {s[1]}\n**Guild:** {(string)s[2]}")
-        ).Select(r => r.Result))
-        .WithColor(embedColor)
-        .WithFooter($"Showing {start + 1}-{start + 6} out of {_worshipData.Count}");
-
-    private struct ViewWorshipsInstance
-    {
-        public int CurrentIndex { get; set; }
-        public IUser User { get; init; }
-        public uint EmbedColor { get; init; }
-    }
-    
-    private static readonly ButtonBuilder BackButton = new ButtonBuilder()
-        .WithStyle(ButtonStyle.Secondary)
-        .WithLabel("Back")
-        .WithEmote(new Emoji("⬅"))
-        .WithCustomId("Back");
-        
-    private static readonly ButtonBuilder ForwardButton = new ButtonBuilder()
-        .WithStyle(ButtonStyle.Secondary)
-        .WithLabel("Forward")
-        .WithEmote(new Emoji("➡"))
-        .WithCustomId("Forward");
-    
-    [Event(EventTypes.ButtonExecuted), UsedImplicitly]
-    public static async Task ViewWorshipsButtonsEvent(SocketMessageComponent component)
-    {
-        if (component.Data.CustomId is not ("Back" or "Forward")) return;
-
-        await component.DeferAsync(ephemeral: true);
-
-        if (!ViewWorshipsInstances.ContainsKey(component.Message.Id))
-        {
-            await component.FollowupAsync("This interaction expired. Worships list interactions expire after 15 minutes, run `/worships view` again.", ephemeral: true);
-            return;
-        }
-        
-        ViewWorshipsInstance thisInstance = ViewWorshipsInstances[component.Message.Id];
-        
-        if (component.User.Id != thisInstance.User.Id)
-        {
-            await component.FollowupAsync("This interaction is not yours, run `/worships view` yourself.", ephemeral: true);
-            return;
-        }
-
-        _ = component.Data.CustomId == "Back" ? thisInstance.CurrentIndex -= 5 : thisInstance.CurrentIndex += 5;
-        
-        await component.Message.ModifyAsync(m =>
-        {
-            ComponentBuilder instanceComponentBuilder = new ComponentBuilder();
-            if (thisInstance.CurrentIndex != 0) instanceComponentBuilder = instanceComponentBuilder.WithButton(BackButton);
-            if (thisInstance.CurrentIndex + 5 < _worshipData.Count) instanceComponentBuilder = instanceComponentBuilder.WithButton(ForwardButton);
-                
-            m.Embed = GetPageEmbed(thisInstance.CurrentIndex, thisInstance.EmbedColor).Build();
-            m.Components = instanceComponentBuilder.Build();
-        });
-
-        ViewWorshipsInstances[component.Message.Id] = thisInstance;
-    }
     
     [SlashCommand("view", "View all of the worships sent to jamie."), CommandCooldown(60), UsedImplicitly]
-    public async Task ViewAsync([Summary("Order", "The order which the worships will be displayed"), Choice("Ascending", "ASC"), Choice("Descending", "DESC")]string order = "ASC")
+    public Task ViewAsync([Summary("Order", "The order which the worships will be displayed"), Choice("Ascending", "ASC"), Choice("Descending", "DESC")]string order = "ASC")
     {
-        await DeferAsync();
-
-        _worshipData = DataBase.RunSqliteCommandAllRows($"SELECT UserId, Worship, Guild, Id FROM Worships ORDER BY Id {order}");
-
-        if (_worshipData.Count == 0)
+        _ = new PagedEmbedHandler<List<object>>(new()
         {
-            EmbedBuilder noWorshipsEmbed = new EmbedBuilder()
-                .WithTitle("No worships :(")
-                .WithDescription($"Sadly {Config.Jamie.Username} has no worshippers yet, Use `/worships do` to worship jamie")
-                .WithColor(RandomColor());
-
-            await ModifyOriginalResponseAsync(r => r.Embed = noWorshipsEmbed.Build());
-            return;
-        }
-
-        uint embedColor = RandomColor();
-
-        await ModifyOriginalResponseAsync(r =>
-        {
-            r.Embed = GetPageEmbed(0, embedColor).Build();
-            r.Components = _worshipData.Count <= 5 ? null : new ComponentBuilder().WithButton(ForwardButton).Build();
-        });
+           Prefix = "ViewWorships",
+           CommandName = "/worships view",
+           ErrorEmptyTitle = "No worships :(",
+           ErrorEmptyDescription = "Jamie has no worships, run `/worhips do` to worship jamie",
+           ListEmbedTitle = "Here are jamie worships"
+        }, 
+            DataBase.RunSqliteCommandAllRows($"SELECT UserId, Worship, Guild, Id FROM Worships ORDER BY Id {order}"), Context,  async s => new EmbedFieldBuilder()
+            .WithName($"User: {(await Client.GetUserAsync((ulong)(long)s[0])).ToString() ?? "Not found#0000"}")
+            .WithValue($"**ID:** `{s[3]}`\n**Worship:** {s[1]}\n**Guild:** {(string)s[2]}"));
         
-        if(_worshipData.Count <= 5) return;
-
-        ulong interactionMessageId = (await Context.Interaction.GetOriginalResponseAsync()).Id;
-        
-        ViewWorshipsInstances.Add(interactionMessageId, new ViewWorshipsInstance{User = Context.User, CurrentIndex = 0, EmbedColor = embedColor});
-
-        async void RemoveInstanceThreadHandler(ulong id)
-        {
-            await Task.Delay(TimeSpan.FromMinutes(15));
-            ViewWorshipsInstances.Remove(id);
-        }
-        
-        new Thread(() => RemoveInstanceThreadHandler(interactionMessageId)).Start();
+        return Task.CompletedTask;
     }
 
     [SlashCommand("do", "Worship Jamie!"), CommandCooldown(30), UsedImplicitly]
