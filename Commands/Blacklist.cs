@@ -43,7 +43,7 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
     
     [SlashCommand("view", "View blacklisted users"), UsedImplicitly,
      CommandCooldown(15), OnlyModerators(ModeratorsSelection.AllMods, "❌ Only moderators can view blacklisted users due to privacy reasons ❌")]
-    public async Task ViewBlackListAsync()
+    public Task ViewBlackListAsync()
     {
         List<List<object>> dbBlackList = DataBase.RunSqliteCommandAllRows("SELECT Id FROM BlackListedUsers");
         _ = new PagedEmbedHandler<List<object>>(new()
@@ -63,5 +63,6 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
                     .WithValue($"**ID:** `{currentUser.Id}`\n**Joined discord:** <t:{currentUser.CreatedAt.ToUnixTimeSeconds()}:F>");
             }
         );
+        return Task.CompletedTask;
     }
 }
