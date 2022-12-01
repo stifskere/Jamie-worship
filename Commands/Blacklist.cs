@@ -22,7 +22,7 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
 
         if (!target.IsOnBlackList())
         {
-            DataBase.RunSqliteCommandAllRows($"INSERT OR IGNORE INTO BlackListedUsers(Id) VALUES({target.Id})");
+            DataBase.RunSqliteCommandAllRows($"INSERT OR IGNORE INTO BlackListedUsers(UserId, AuthorId) VALUES({target.Id}, {Context.User.Id})");
             await RespondAsync($"{target.Mention} was blacklisted successfully, they won't be able to send worships until un-blacklist.", ephemeral: true);
         }
         else await RespondAsync($"{target.Mention} is already blacklisted, they can't send worships until un-blacklist", ephemeral: true);
@@ -35,7 +35,7 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
 
         if (target.IsOnBlackList())
         {
-            DataBase.RunSqliteCommandAllRows($"DELETE FROM BlackListedUsers WHERE Id = {target.Id}");
+            DataBase.RunSqliteCommandAllRows($"DELETE FROM BlackListedUsers WHERE UserId = {target.Id}");
             await RespondAsync($"{target.Mention} was removed from the blacklist successfully, they now will be able to worship Jamie.", ephemeral: true);
         }
         else await RespondAsync($"{target.Mention} is already not blacklisted", ephemeral: true);
@@ -45,7 +45,7 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
      CommandCooldown(15), OnlyModerators(ModeratorsSelection.AllMods, "❌ Only moderators can view blacklisted users due to privacy reasons ❌")]
     public Task ViewBlackListAsync()
     {
-        List<List<object>> dbBlackList = DataBase.RunSqliteCommandAllRows("SELECT Id FROM BlackListedUsers");
+        List<List<object>> dbBlackList = DataBase.RunSqliteCommandAllRows("SELECT UserId, AuthorId FROM BlackListedUsers");
         _ = new PagedEmbedHandler<List<object>>(new()
         {
             Prefix = "BlackList", 
@@ -57,10 +57,12 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
             dbBlackList, Context, async iteration =>
             {
                 IUser currentUser = await Client.GetUserAsync((ulong)(long)iteration[0]);
+                IUser? currentModerator = null;
+                if (iteration[1] is not DBNull) currentModerator = await Client.GetUserAsync((ulong)(long)iteration[1]);
                 
                 return new EmbedFieldBuilder()
                     .WithName($"User: {currentUser}")
-                    .WithValue($"**ID:** `{currentUser.Id}`\n**Joined discord:** <t:{currentUser.CreatedAt.ToUnixTimeSeconds()}:F>");
+                    .WithValue($"**ID:** `{currentUser.Id}`\n**Joined discord:** <t:{currentUser.CreatedAt.ToUnixTimeSeconds()}:F>\n**Moderator:** {(currentModerator != null ? $"{currentModerator}\n**Moderator ID:** `{currentModerator.Id}`" : "Moderator is not known")}");
             }
         );
         return Task.CompletedTask;

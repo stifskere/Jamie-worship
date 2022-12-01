@@ -59,8 +59,7 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
         if (send)
             try
             {
-                List<List<object>> blackList = DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
-                if (blackList.Count > 0)
+                if (Context.User.IsOnBlackList())
                 {
                     await FollowupAsync("🙅 You are in the blacklist, you cannot send anything to jamie. 🚫", ephemeral: true);
                     return;

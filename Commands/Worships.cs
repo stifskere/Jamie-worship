@@ -40,8 +40,7 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
             return;
         }
         
-        List<List<object>> blackList = DataBase.RunSqliteCommandAllRows($"SELECT Id FROM BlackListedUsers WHERE Id = {Context.User.Id}");
-        if (blackList.Count > 0)
+        if (Context.User.IsOnBlackList())
         {
             await FollowupAsync("🚫 You are in the blacklist, you cannot worship jamie. 🙅", ephemeral: true);
             await DeleteOriginalResponseAsync();

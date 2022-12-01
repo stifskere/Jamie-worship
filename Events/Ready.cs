@@ -55,7 +55,7 @@ public static class Ready
         DataBase.RunSqliteCommandAllRows(@"
             CREATE TABLE IF NOT EXISTS Worshippers(Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER NOT NULL, Worship VARCHAR NOT NULL, Guild VARCHAR NOT NULL, unique(Id));
             CREATE TABLE IF NOT EXISTS JamieInfo(InfoKey VARCHAR NOT NULL PRIMARY KEY, InfoValue VARCHAR NOT NULL, unique(InfoKey));
-            CREATE TABLE IF NOT EXISTS BlackListedUsers(Id INTEGER PRIMARY KEY NOT NULL, unique(Id));
+            CREATE TABLE IF NOT EXISTS BlackListedUsers(UserId INTEGER PRIMARY KEY NOT NULL, AuthorId INTEGER, unique(UserId));
             CREATE TABLE IF NOT EXISTS BotConfig(ConfigKey VARCHAR NOT NULL PRIMARY KEY, ConfigValue VARCHAR NOT NULL, unique(ConfigKey));
             ");
 

@@ -5,12 +5,10 @@ namespace JamieWorshipper.Handlers;
 
 public class PagedEmbedHandler<TListType>
 {
-    private struct PageEmbedInstance
-    {
-        public int CurrentIndex { get; set; }
-        public IUser Author { get; init; }
-        public uint EmbedColor { get; init; }
-    }
+
+    public int CurrentIndex { get; set; }
+    public IUser Author { get; set; } = null!;
+    public uint EmbedColor { get; set; }
 
     public struct ListConfiguration
     {
@@ -34,7 +32,7 @@ public class PagedEmbedHandler<TListType>
     // ReSharper enable StaticMemberInGenericType
 
     private static readonly Dictionary<string, (List<TListType> list, ListConfiguration configuration, FieldDelegate predicate)> CurrentLists = new();
-    private static readonly Dictionary<ulong, PageEmbedInstance> CurrentInstances = new();
+    private static readonly Dictionary<ulong, PagedEmbedHandler<TListType>> CurrentInstances = new();
 
     public delegate Task<EmbedFieldBuilder> FieldDelegate(TListType listIteration);
 
@@ -67,7 +65,7 @@ public class PagedEmbedHandler<TListType>
             return;
         }
 
-        PageEmbedInstance thisInstance = CurrentInstances[component.Message.Id];
+        PagedEmbedHandler<TListType> thisInstance = CurrentInstances[component.Message.Id];
 
         if (component.User.Id != thisInstance.Author.Id)
         {
@@ -95,25 +93,27 @@ public class PagedEmbedHandler<TListType>
         CurrentInstances[component.Message.Id] = thisInstance;
     }
     
-    private static async void ConstructorAsync(ListConfiguration config, List<TListType> list, SocketInteractionContext context, FieldDelegate predicate)
+    private async void ConstructorAsync(ListConfiguration config, List<TListType> list, SocketInteractionContext context, FieldDelegate predicate)
     {
         await context.Interaction.DeferAsync();
         
-        uint embedColor = RandomColor();
+        EmbedColor = RandomColor();
+        CurrentIndex = 0;
+        Author = context.User;
 
         if (list.Count < 1)
         {
             await context.Interaction.ModifyOriginalResponseAsync(r => r.Embed = new Optional<Embed>(new EmbedBuilder()
                 .WithTitle(config.ErrorEmptyTitle)
                 .WithDescription(config.ErrorEmptyDescription)
-                .WithColor(embedColor)
+                .WithColor(EmbedColor)
                 .Build()));
             return;
         }
 
         await context.Interaction.ModifyOriginalResponseAsync(r =>
         {
-            r.Embed = new Optional<Embed>(GetPageEmbed(0, embedColor, list, config, predicate).Build());
+            r.Embed = new Optional<Embed>(GetPageEmbed(0, EmbedColor, list, config, predicate).Build());
             r.Components = list.Count <= 5 ? null : new ComponentBuilder().WithButton(ForwardButton.WithCustomId($"{config.Prefix}-Forward")).Build();
         });
         
@@ -121,7 +121,7 @@ public class PagedEmbedHandler<TListType>
 
         ulong interactionMessageId = (await context.Interaction.GetOriginalResponseAsync()).Id;
         
-        CurrentInstances.Add(interactionMessageId, new PageEmbedInstance{Author = context.User, CurrentIndex = 0, EmbedColor = embedColor});
+        CurrentInstances.Add(interactionMessageId, this);
         CurrentLists[config.Prefix] = (list, config, predicate);
 
         async void RemoveInstanceThreadHandler(ulong id)

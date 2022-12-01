@@ -26,7 +26,7 @@ public static class CustomMethods
     [MustUseReturnValue] public static uint RandomColor() => (uint)new Random().Next(0x0, 0xFFFFFF);
 
     public static bool IsOnBlackList(this IUser user)
-        => DataBase.RunSqliteCommandFirstRow($"SELECT Id FROM BlackListedUsers WHERE Id = {user.Id}").Count > 0;
+        => DataBase.RunSqliteCommandFirstRow($"SELECT UserId FROM BlackListedUsers WHERE UserId = {user.Id}").Count > 0;
 
     public static bool IsModerator(this IUser user) => Config.Moderators.Contains(user.Id);
 
