@@ -42,11 +42,11 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync();
 
-        if (!File.Exists("./JamieGif.gif"))
+        if (!File.Exists("./build/JamieGif.gif"))
         {
             async Task CreateFileTask()
             {
-                await using FileStream fs = File.Create("./JamieGif.gif");
+                await using FileStream fs = File.Create("./build/JamieGif.gif");
                 using HttpClient client = new HttpClient();
                 await fs.WriteAsync(await client.GetByteArrayAsync("https://cdn.memw.es/helloJamie.gif"));
             }
@@ -54,7 +54,7 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
             await CreateFileTask();
         }
 
-        await Context.Channel.SendFileAsync(filePath: "./JamieGif.gif");
+        await Context.Channel.SendFileAsync(filePath: "./build/JamieGif.gif");
         await ModifyOriginalResponseAsync(r => r.Content = "Loaded.");
         if (send)
             try
@@ -65,7 +65,7 @@ public class Jamie : InteractionModuleBase<SocketInteractionContext>
                     return;
                 }
 
-                await Config.Jamie.SendFileAsync("./JamieGif.gif");
+                await Config.Jamie.SendFileAsync("./build/JamieGif.gif");
                 await FollowupAsync("The gif was sent to jamie", ephemeral: true);
             }
             catch
