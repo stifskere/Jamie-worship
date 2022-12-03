@@ -57,9 +57,8 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
             dbBlackList, Context, async iteration =>
             {
                 IUser currentUser = await Client.GetUserAsync((ulong)(long)iteration[0]);
-                IUser? currentModerator = null;
-                if (iteration[1] is not DBNull) currentModerator = await Client.GetUserAsync((ulong)(long)iteration[1]);
-                
+                IUser? currentModerator = iteration[1] is not DBNull ? await Client.GetUserAsync((ulong)(long)iteration[1]) : null;
+
                 return new EmbedFieldBuilder()
                     .WithName($"User: {currentUser}")
                     .WithValue($"**ID:** `{currentUser.Id}`\n**Joined discord:** <t:{currentUser.CreatedAt.ToUnixTimeSeconds()}:F>\n**Moderator:** {(currentModerator != null ? $"{currentModerator}\n**Moderator ID:** `{currentModerator.Id}`" : "Moderator is not known")}");

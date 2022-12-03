@@ -37,27 +37,20 @@ public static class MessageReceived
             UPDATE JamieInfo SET InfoValue = @0 WHERE InfoKey = 'LastMessage';
             ", message.Content);
         }
-        
-        if (message.Content.ToLower().Contains("jamie") && messageGuild.Id == Config.MainGuild.Id && !_jamieCooldown)
+
+        if (message.Content.ToLower().Contains("jamie") && messageGuild.Id == Config.MainGuild.Id && !_jamieMessagesCooldown)
         {
-            await message.Channel.SendMessageAsync(new[]
-                {
-                    "Want to talk about Jamie with me?",
-                    "Did you say Jamie?",
-                    "I also like Jamie",
-                    "Jamie is a god for me",
-                    "You talking about jamie and not telling me!?"
-                }
-            [new Random().Next(0, 4)], messageReference: new MessageReference(message.Id));
+            string[] messages = { "Want to talk about Jamie with me?", "Did you say Jamie?", "I also like Jamie", "Jamie is a god for me", "You talking about jamie and not telling me!?" };
+            await message.Channel.SendMessageAsync(messages[new Random().Next(0, 4)], messageReference: new MessageReference(message.Id));
             
-            new Task(() =>
+            new Thread(() =>
             {
-                _jamieCooldown = true;
-                Task.Delay(TimeSpan.FromSeconds(10));
-                _jamieCooldown = false;
+                _jamieMessagesCooldown = true;
+                Thread.Sleep(TimeSpan.FromSeconds(5));
+                _jamieMessagesCooldown = false;
             }).Start();
         }
     }
 
-    private static bool _jamieCooldown;
+    private static bool _jamieMessagesCooldown;
 }

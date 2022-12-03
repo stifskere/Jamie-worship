@@ -5,7 +5,6 @@ namespace JamieWorshipper.Handlers;
 
 public class PagedEmbedHandler<TListType>
 {
-
     public int CurrentIndex { get; set; }
     public IUser Author { get; set; } = null!;
     public uint EmbedColor { get; set; }

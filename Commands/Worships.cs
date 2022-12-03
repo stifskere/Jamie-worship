@@ -61,8 +61,9 @@ public class Worships : InteractionModuleBase<SocketInteractionContext>
                 .AddField($"{Context.User} said", worship)
                 .WithFooter($"The id of this worship is {(long)worshipCount[0]}");
             
+#if !DEBUG
             await Config.Jamie.SendMessageAsync(embed: sentWorshipEmbed.Build());
-
+#endif
             DataBase.RunSqliteCommandAllRows($"INSERT INTO Worships(UserId, Worship, Guild, Id) VALUES({Context.User.Id}, @0, @1, null)", worship, Context.Interaction.IsDMInteraction ? "Private messages" : Context.Guild.Name);
             BotStatsHandler.WorshipsNum++;
             
