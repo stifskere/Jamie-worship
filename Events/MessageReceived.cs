@@ -33,8 +33,10 @@ public static class MessageReceived
             await Config.MessagesChannel.SendMessageAsync(embed: embed.Build(), components: components.Build());
 
             DataBase.RunSqliteCommandAllRows(@"
-            UPDATE JamieInfo SET InfoValue = CAST((SELECT CAST(InfoValue AS INTEGER) FROM JamieInfo WHERE InfoKey = 'MessageNum') + 1 AS TEXT) WHERE InfoKey = 'MessageNum';
-            UPDATE JamieInfo SET InfoValue = @0 WHERE InfoKey = 'LastMessage';
+            UPDATE JamieInfo SET InfoValue = CASE
+                WHEN InfoKey = 'MessageNum' THEN CAST((SELECT CAST(InfoValue AS INTEGER) FROM JamieInfo WHERE InfoKey = 'MessageNum') + 1 AS TEXT)
+                WHEN InfoKey = 'LastMessage' THEN @0
+            END WHERE InfoKey IN ('MessageNum', 'LastMessage');
             ", message.Content);
         }
 

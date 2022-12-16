@@ -32,10 +32,9 @@ public class CustomClient : DiscordSocketClient
         }
         else Env = new EnvReader(new Dictionary<string, string>());
         
-        foreach (MethodInfo method in customConfig.Assembly.GetTypes().SelectMany(t => t.GetMethods()).Where(m => m.GetCustomAttributes(typeof(EventAttribute), false).Length > 0).ToArray())
+        foreach (MethodInfo method in customConfig.Assembly.GetTypes().SelectMany(t => t.GetMethods()).Where(m => m.GetCustomAttributes(typeof(EventAttribute), false).Length > 0))
         {
-            CustomAttributeData customAttributeData = method.GetCustomAttributesData().First(a => a.AttributeType.Name == "EventAttribute");
-            EventInfo eventData = GetType().GetEvent(((EventTypes)customAttributeData.ConstructorArguments.First().Value!).ToString())!;
+            EventInfo eventData = GetType().GetEvent(((EventTypes)method.GetCustomAttributesData().First(a => a.AttributeType.Name == "EventAttribute").ConstructorArguments.First().Value!).ToString())!;
             eventData.AddEventHandler(this, method.CreateDelegate(eventData.EventHandlerType!));
         }
         

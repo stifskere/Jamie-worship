@@ -47,49 +47,55 @@ public class PagedEmbedHandler<TListType>
             .WithFooter($"Showing {start + 1}-{start + 6} out of {list.Count}");
 
     private static bool _listButtonsEventAdded;
-    public static async Task ListButtonsEvent(SocketMessageComponent component)
+    public static Task ListButtonsEvent(SocketMessageComponent component)
     {
-        if (!new[] {"-Back", "-Forward"}.Any(c => component.Data.CustomId.Contains(c))) return;
+        async void ThreadEvent()
+        {
+            if (!new[] {"-Back", "-Forward"}.Any(c => component.Data.CustomId.Contains(c))) return;
 
-        await component.DeferAsync(ephemeral: true);
+            await component.DeferAsync(ephemeral: true);
         
-        string prefix = component.Data.CustomId.Split('-')[0];
-        ListConfiguration currentConfig = CurrentLists[prefix].configuration;
-        List<TListType> currentList = CurrentLists[prefix].list;
-        FieldDelegate currentPredicate = CurrentLists[prefix].predicate;
+            string prefix = component.Data.CustomId.Split('-')[0];
+            ListConfiguration currentConfig = CurrentLists[prefix].configuration;
+            List<TListType> currentList = CurrentLists[prefix].list;
+            FieldDelegate currentPredicate = CurrentLists[prefix].predicate;
 
-        if (!CurrentInstances.ContainsKey(component.Message.Id))
-        {
-            await component.FollowupAsync($"This interaction expired. Lists expire after 15 minutes, run `{currentConfig.CommandName}` again.");
-            return;
-        }
+            if (!CurrentInstances.ContainsKey(component.Message.Id))
+            {
+                await component.FollowupAsync($"This interaction expired. Lists expire after 15 minutes, run `{currentConfig.CommandName}` again.");
+                return;
+            }
 
-        PagedEmbedHandler<TListType> thisInstance = CurrentInstances[component.Message.Id];
+            PagedEmbedHandler<TListType> thisInstance = CurrentInstances[component.Message.Id];
 
-        if (component.User.Id != thisInstance.Author.Id)
-        {
-            await component.FollowupAsync($"This interaction is not yours, run `{currentConfig.CommandName}` yourself.");
-            return;
-        }
+            if (component.User.Id != thisInstance.Author.Id)
+            {
+                await component.FollowupAsync($"This interaction is not yours, run `{currentConfig.CommandName}` yourself.");
+                return;
+            }
 
-        _ = component.Data.CustomId.Contains("-Back") ? thisInstance.CurrentIndex -= 5 : thisInstance.CurrentIndex += 5;
+            _ = component.Data.CustomId.Contains("-Back") ? thisInstance.CurrentIndex -= 5 : thisInstance.CurrentIndex += 5;
 
-        await component.Message.ModifyAsync(m =>
-        {
-            ComponentBuilder instanceComponentBuilder = new ComponentBuilder();
-            if (thisInstance.CurrentIndex != 0)
-                instanceComponentBuilder =
-                    instanceComponentBuilder.WithButton(BackButton.WithCustomId($"{prefix}-Back"));
-            if (thisInstance.CurrentIndex + 5 < currentList.Count)
-                instanceComponentBuilder =
-                    instanceComponentBuilder.WithButton(ForwardButton.WithCustomId($"{prefix}-Forward"));
+            await component.Message.ModifyAsync(m =>
+            {
+                ComponentBuilder instanceComponentBuilder = new ComponentBuilder();
+                if (thisInstance.CurrentIndex != 0)
+                    instanceComponentBuilder =
+                        instanceComponentBuilder.WithButton(BackButton.WithCustomId($"{prefix}-Back"));
+                if (thisInstance.CurrentIndex + 5 < currentList.Count)
+                    instanceComponentBuilder =
+                        instanceComponentBuilder.WithButton(ForwardButton.WithCustomId($"{prefix}-Forward"));
 
-            m.Embed = GetPageEmbed(thisInstance.CurrentIndex, thisInstance.EmbedColor, currentList, currentConfig,
-                currentPredicate).Build();
-            m.Components = instanceComponentBuilder.Build();
-        });
+                m.Embed = GetPageEmbed(thisInstance.CurrentIndex, thisInstance.EmbedColor, currentList, currentConfig,
+                    currentPredicate).Build();
+                m.Components = instanceComponentBuilder.Build();
+            });
         
-        CurrentInstances[component.Message.Id] = thisInstance;
+            CurrentInstances[component.Message.Id] = thisInstance;
+        }
+        new Thread(ThreadEvent).Start();
+
+        return Task.CompletedTask;
     }
     
     private async void ConstructorAsync(ListConfiguration config, List<TListType> list, SocketInteractionContext context, FieldDelegate predicate)

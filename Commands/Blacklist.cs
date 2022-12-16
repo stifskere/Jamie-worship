@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using JamieWorshipper.Handlers;
 using JetBrains.Annotations;
 
@@ -14,7 +15,9 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
         await RespondAsync("❌ You cannot blacklist/un-blacklist yourself nor any moderator. ❌", ephemeral: true);
         return false;
     }
-    
+
+    private static readonly Dictionary<ulong, IUser> Targets = new();
+
     [UserCommand("Blacklist"), UsedImplicitly, OnlyModerators(ModeratorsSelection.AllMods, "❌ You cannot blacklist worshippers, you require to be a bot moderator to do so. ❌")]
     public async Task BlackListAsync(IUser target)
     {
@@ -22,10 +25,18 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
 
         if (!target.IsOnBlackList())
         {
-            DataBase.RunSqliteCommandAllRows($"INSERT OR IGNORE INTO BlackListedUsers(UserId, AuthorId) VALUES({target.Id}, {Context.User.Id})");
-            await RespondAsync($"{target.Mention} was blacklisted successfully, they won't be able to send worships until un-blacklist.", ephemeral: true);
+            Targets.Add(Context.User.Id, target);
+
+            ModalBuilder modal = new ModalBuilder()
+                .WithTitle("Blacklist")
+                .WithCustomId("BlacklistModal")
+                .AddTextInput("Reason", "reason", placeholder: "optional");
+            
+            await RespondWithModalAsync(modal.Build());
+            return;
         }
-        else await RespondAsync($"{target.Mention} is already blacklisted, they can't send worships until un-blacklist", ephemeral: true);
+        
+        await RespondAsync($"{target.Mention} is already blacklisted, they can't send worships until un-blacklist", ephemeral: true);
     }
 
     [UserCommand("Whitelist"), UsedImplicitly, OnlyModerators(ModeratorsSelection.AllMods, "❌ You cannot whitelist worshippers, you require to be a bot moderator to do so. ❌")]
@@ -36,16 +47,32 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
         if (target.IsOnBlackList())
         {
             DataBase.RunSqliteCommandAllRows($"DELETE FROM BlackListedUsers WHERE UserId = {target.Id}");
-            await RespondAsync($"{target.Mention} was removed from the blacklist successfully, they now will be able to worship Jamie.", ephemeral: true);
+            await RespondAsync($"{target.Mention} was whitelisted successfully, they can worship {Config.Jamie.Username} now.", ephemeral: true);
+            return;
         }
-        else await RespondAsync($"{target.Mention} is already not blacklisted", ephemeral: true);
+        
+        await RespondAsync($"{target.Mention} is already not blacklisted", ephemeral: true);
+    }
+
+    [Event(EventTypes.ModalSubmitted), UsedImplicitly]
+    public static async Task SubmitModalAsync(SocketModal modal)
+    {
+        if (modal.Data.CustomId != "BlacklistModal") return;
+        
+        string reason = modal.Data.Components.First(x => x.CustomId == "reason").Value;
+        IUser target = Targets[modal.User.Id];
+
+        DataBase.RunSqliteCommandAllRows($"INSERT OR IGNORE INTO BlackListedUsers(UserId, AuthorId, Reason) VALUES({target.Id}, {modal.User.Id}, @0)", reason);
+        
+        await modal.RespondAsync($"{target.Mention} was blacklisted successfully, they can't worship {Config.Jamie.Username} anymore until they are whitelisted again.", ephemeral: true);
+        Targets.Remove(modal.User.Id);
     }
     
     [SlashCommand("view", "View blacklisted users"), UsedImplicitly,
      CommandCooldown(15), OnlyModerators(ModeratorsSelection.AllMods, "❌ Only moderators can view blacklisted users due to privacy reasons ❌")]
     public Task ViewBlackListAsync()
     {
-        List<List<object>> dbBlackList = DataBase.RunSqliteCommandAllRows("SELECT UserId, AuthorId FROM BlackListedUsers");
+        List<List<object>> dbBlackList = DataBase.RunSqliteCommandAllRows("SELECT UserId, AuthorId, Reason FROM BlackListedUsers");
         _ = new PagedEmbedHandler<List<object>>(new()
         {
             Prefix = "BlackList", 
@@ -61,7 +88,7 @@ public class Blacklist : InteractionModuleBase<SocketInteractionContext>
 
                 return new EmbedFieldBuilder()
                     .WithName($"User: {currentUser}")
-                    .WithValue($"**ID:** `{currentUser.Id}`\n**Joined discord:** <t:{currentUser.CreatedAt.ToUnixTimeSeconds()}:F>\n**Moderator:** {(currentModerator != null ? $"{currentModerator}\n**Moderator ID:** `{currentModerator.Id}`" : "Moderator is not known")}");
+                    .WithValue($"**ID:** `{currentUser.Id}`\n**Moderator:** {(currentModerator != null ? $"{currentModerator}\n**Moderator ID:** `{currentModerator.Id}`" : "Moderator is not known")}\n**Reason:** {(iteration[2] is not DBNull ? iteration[2] : "no reason defined.")}");
             }
         );
         return Task.CompletedTask;
