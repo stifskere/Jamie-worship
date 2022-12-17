@@ -22,10 +22,15 @@ public static class MessageReceived
 
         if (message.Author.Id == Config.Jamie.Id && !string.IsNullOrEmpty(message.Content))
         {
+            string[] titles = { "Jamie said something", "He said something", "Message from our god" };
+            string[] footers = { "I'l keep whatever our god says in here", "Whatever jamie says here I will say", "I'm going to save in here Jamie's messages" };
+            int index = new Random().Next(0, 2);
+            
             EmbedBuilder embed = new EmbedBuilder()
-                .WithTitle("Jamie said something")
+                .WithTitle(titles[index])
                 .WithDescription($"**He said:** {message.Content}\n**In:** {messageGuild.Name}")
-                .WithFooter("I'l keep whatever our god says in here");
+                .WithFooter(footers[index])
+                .WithCurrentTimestamp();
 
             ComponentBuilder components = new ComponentBuilder()
                 .WithButton(new ButtonBuilder { Label = "Go to message", Style = ButtonStyle.Link, Url = message.GetJumpUrl() });
